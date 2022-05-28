@@ -15,6 +15,7 @@
       body {
         margin: 0;
         background-color: #eeeeee;
+        font-family: roboto;
       }
     </style>
 
@@ -67,26 +68,28 @@
         const active = pages.find(el=>el.active)
         const activeIndex = pages.indexOf(active)
         if (activeIndex == 0) {
-          return
+          return 0
           pages[pages.length - 1].setAttribute('active', '')
         }
         else {
           pages[activeIndex - 1].setAttribute('active', '')
         }
         active.removeAttribute('active')
+        return activeIndex - 1
       }
       window.nextPage = function () {
         const pages = [...rawElement.shadowRoot.querySelector('post-element').shadowRoot.querySelectorAll('page-element')]
         const active = pages.find(el=>el.active)
         const activeIndex = pages.indexOf(active)
-        if (activeIndex >= pages.length - 1) {
-          return
+        if (activeIndex == pages.length - 1) {
+          return activeIndex
           pages[0].setAttribute('active', '')
         }
         else {
           pages[activeIndex + 1].setAttribute('active', '')
         }
         active.removeAttribute('active')
+        return activeIndex + 1
       }
     </script>
   </body>

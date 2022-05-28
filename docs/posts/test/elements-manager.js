@@ -28,9 +28,15 @@ export class ElementsManager extends LitElement {
       ${this.elements.map((el,i)=> {
         return html`
         <div class="element" style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;font-size:1.4em">
-          <span>${el.w}/${el.s}/${el.m}</span>
-          <mwc-icon-button icon=delete
-            @click=${()=>{this.onDeleteButtonClick(i)}}></mwc-icon-button>
+          <span @click=${()=>{this.onElementClick(el)}}>${el.w}/${el.s}/${el.m}</span>
+          <div style="white-space:nowrap">
+            <mwc-icon-button icon=arrow_upward
+              @click=${()=>{this.onArrowUpwardClick(i)}}></mwc-icon-button>
+            <mwc-icon-button icon=arrow_downward
+              @click=${()=>{this.onArrowDownwardClick(i)}}></mwc-icon-button>
+            <mwc-icon-button icon=delete
+              @click=${()=>{this.onDeleteButtonClick(i)}}></mwc-icon-button>
+          </div>
         </div>
         `
       })}
@@ -42,8 +48,8 @@ export class ElementsManager extends LitElement {
       <mwc-button outlined slot=secondaryAction dialogAction=close>close</mwc-button>
     </mwc-dialog>
 
-    <mwc-dialog heading="Create Element">
 
+    <mwc-dialog heading="Create Element">
       <mwc-textfield outlined id=w label="word" @keyup=${()=>{this.onTextFieldKeyPress()}}></mwc-textfield>
       <mwc-textfield outlined id=s label="secondary" @keyup=${()=>{this.onTextFieldKeyPress()}}></mwc-textfield>
       <mwc-textfield outlined id=m label="meaning" @keyup=${()=>{this.onTextFieldKeyPress()}}></mwc-textfield>
@@ -56,6 +62,38 @@ export class ElementsManager extends LitElement {
         @click=${()=>{this.submit()}}>add</mwc-button>
     </mwc-dialog>
     `
+  }
+
+  onElementClick (element) {
+    const input = prompt('change info', `${element.w}/${element.s}/${element.m}`)
+    if (input) {
+      const [w, s, m] = input.split('/')
+      element.w = w
+      element.s = s
+      element.m = m
+    }
+
+    this.saveLocalStorage()
+    this.requestUpdate()
+  }
+
+  onArrowUpwardClick (index) {
+    if (index == 0) return
+    const downElement = this.elements[index - 1]
+    this.elements[index - 1] = this.elements[index]
+    this.elements[index] = downElement
+    this.requestUpdate()
+    this.saveLocalStorage()
+    this.dispatchEvent(new CustomEvent('submit'))
+  }
+  onArrowDownwardClick (index) {
+    if (index + 1 == this.elements.length) return
+    const upElement = this.elements[index + 1]
+    this.elements[index + 1] = this.elements[index]
+    this.elements[index] = upElement
+    this.requestUpdate()
+    this.saveLocalStorage()
+    this.dispatchEvent(new CustomEvent('submit'))
   }
 
   onTextFieldKeyPress () {
@@ -90,7 +128,7 @@ export class ElementsManager extends LitElement {
   }
 
   reset () {
-    const inputs = this.dialog.querySelectorAll('[id]')
+    const inputs = this.createElementDialog.querySelectorAll('[id]')
     inputs.forEach(el=>el.value = '')
   }
 

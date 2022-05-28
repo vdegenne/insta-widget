@@ -19114,14 +19114,27 @@ let CanvasElement = class CanvasElement extends s$1 {
             }
         }
     }
+    firstUpdated() {
+        window.addEventListener('resize', () => {
+            this.updateSize();
+        });
+    }
+    updated() {
+        this.updateSize();
+    }
+    updateSize() {
+        const styles = getComputedStyle(this);
+        this.style.height = styles.width;
+    }
 };
 CanvasElement.styles = r$3 `
   :host {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 640px;
-    height: 640px;
+    width: 100%;
+    max-width: 640px;
+    max-height: 640px;
     background-color: #ffedb7;
     position: relative;
     box-sizing: border-box;

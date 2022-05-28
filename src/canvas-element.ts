@@ -2,7 +2,6 @@ import { css, html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '@material/mwc-dialog'
 import '@material/mwc-icon-button'
-import { globalStyles } from './styles/globalStyles'
 
 @customElement('canvas-element')
 export class CanvasElement extends LitElement {
@@ -12,8 +11,9 @@ export class CanvasElement extends LitElement {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 640px;
-    height: 640px;
+    width: 100%;
+    max-width: 640px;
+    max-height: 640px;
     background-color: #ffedb7;
     position: relative;
     box-sizing: border-box;
@@ -32,5 +32,20 @@ export class CanvasElement extends LitElement {
         await el.operate()
       }
     }
+  }
+
+  firstUpdated () {
+    window.addEventListener('resize', () => {
+      this.updateSize()
+    })
+  }
+
+  updated () {
+    this.updateSize()
+  }
+
+  updateSize () {
+    const styles = getComputedStyle(this)
+    this.style.height = styles.width
   }
 }
