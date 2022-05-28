@@ -19161,6 +19161,8 @@ KaidanNedan = __decorate([
     n$2('kaidan-nedan')
 ], KaidanNedan);
 
+function index(e){if(navigator.clipboard)return navigator.clipboard.writeText(e).catch(function(e){throw void 0!==e?e:new DOMException("The request is not allowed","NotAllowedError")});var o=document.createElement("span");o.textContent=e,o.style.whiteSpace="pre",document.body.appendChild(o);var t=window.getSelection(),r=window.document.createRange();t.removeAllRanges(),r.selectNode(o),t.addRange(r);var n=!1;try{n=window.document.execCommand("copy");}catch(e){console.log("error",e);}return t.removeAllRanges(),window.document.body.removeChild(o),n?Promise.resolve():Promise.reject(new DOMException("The request is not allowed","NotAllowedError"))}
+
 // @ts-ignore
 window.html = $;
 const views = ['text', 'size', 'back', 'front', 'save'];
@@ -19407,4 +19409,4 @@ AppContainer = __decorate([
     n$2('app-container')
 ], AppContainer);
 
-export { AppContainer, s$1 as LitElement, r$3 as css, globalStyles, $ as html, play, playJapaneseAudio, sleep, speakJapanese };
+export { AppContainer, s$1 as LitElement, index as copyToClipboard, r$3 as css, globalStyles, $ as html, play, playJapaneseAudio, sleep, speakJapanese };

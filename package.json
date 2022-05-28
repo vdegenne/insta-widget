@@ -33,6 +33,7 @@
     "browser-sync": "browser-sync start --proxy http://localhost:33555/ --files docs/raw/index.html --files docs/posts/* --files docs/app.js --no-notify"
   },
   "dependencies": {
+    "@vdegenne/clipboard-copy": "^3.1.0",
     "koa": "^2.13.4",
     "koa-router": "^10.1.1",
     "koa-static": "^5.0.0"

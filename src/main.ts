@@ -28,11 +28,12 @@ import './page-element'
 // import '@material/mwc-checkbox'
 import './posts/kaidan-nedan'
 import { speakJapanese } from './speech'
+import copyToClipboard from '@vdegenne/clipboard-copy'
 
 // @ts-ignore
 window.html = html
 export {html, LitElement, globalStyles, css}
-export {sleep, play, playJapaneseAudio, speakJapanese}
+export {sleep, play, playJapaneseAudio, speakJapanese, copyToClipboard}
 
 declare global {
   interface Window {

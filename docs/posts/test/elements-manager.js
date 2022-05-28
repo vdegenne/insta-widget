@@ -1,4 +1,5 @@
-import { html, LitElement, css } from '../../app.js'
+import { html, LitElement, css, copyToClipboard } from '../../app.js'
+import { googleImageSearch } from './util.js'
 
 export class ElementsManager extends LitElement {
   static properties = {
@@ -34,6 +35,8 @@ export class ElementsManager extends LitElement {
         `
       })}
 
+      <mwc-button outlined slot=secondaryAction icon=photo_camera
+        @click=${()=>{this.copyInstaDescription()}}>insta</mwc-button>
       <mwc-button unelevated slot=secondaryAction icon=add
           @click=${()=>{this.createElementDialog.show()}}>element</mwc-button>
       <mwc-button outlined slot=secondaryAction dialogAction=close>close</mwc-button>
@@ -46,6 +49,8 @@ export class ElementsManager extends LitElement {
       <mwc-textfield outlined id=m label="meaning" @keyup=${()=>{this.onTextFieldKeyPress()}}></mwc-textfield>
       <mwc-textfield outlined id=i label="image (url)" @keyup=${()=>{this.onTextFieldKeyPress()}}></mwc-textfield>
 
+      <mwc-button outlined slot=secondaryAction icon=travel_explore
+        @click=${()=>{googleImageSearch(this.shadowRoot.querySelector('#w').value)}}>search</mwc-button>
       <mwc-button outlined slot=secondaryAction dialogAction=close>close</mwc-button>
       <mwc-button unelevated slot=primaryAction icon=add
         @click=${()=>{this.submit()}}>add</mwc-button>
@@ -99,6 +104,13 @@ export class ElementsManager extends LitElement {
 
   saveLocalStorage () {
     localStorage.setItem('insta-widget:elements', JSON.stringify(this.elements))
+  }
+
+  copyInstaDescription () {
+    const content = `${this.elements.map(el=>`${el.w} (${el.s}) : ${el.m}`).join('\n')}
+
+#learnjapanese #japanesestudy #studyjapan #japanesestudying #studyjapanese #learningjapanese #learnjapaneseonline #japaneseonline #practicejapanese #japaneselearning #japaneselesson #japaneselessons #japaneseclass #japaneselanguageteacher #jlpt #jlptn1 #jlptn2 #jlptn3 #jlptn4 #jlptn5 #jlpt1 #jlpt2 #jlpt3 #jlpt4 #jlpt5 #japanesetest`
+    copyToClipboard(content)
   }
 }
 
