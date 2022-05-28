@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600;700&family=Zen+Kurenaido&family=Zen+Maru+Gothic&display=swap" rel="stylesheet">
+    <!-- <link href="../styles.css" rel="stylesheet"> -->
+  </head>
+  <body>
+    <style>
+      * {position:relative}
+      body {
+        margin: 0;
+        background-color: #eeeeee;
+      }
+    </style>
+
+    <raw-element id="rawElement"></raw-element>
+
+    <script type=module src="../app.js"></script>
+    <script type="module">
+      // module?
+      const params = new URLSearchParams(window.location.search);
+      const module = params.has('mod') ? params.get('mod') : 'main'
+      import {LitElement, globalStyles} from '../app.js';
+      import(`../posts/${module}/interface.js`)
+
+      class RawElement extends LitElement {
+
+        get postElement() { return this.shadowRoot.querySelector('post-element') }
+
+        static styles = [globalStyles]
+
+        render () {
+          return [
+            html`<post-element>`,
+            html`<mwc-button outlined @click=${() => {this.operate()}} style="margin-top:6px">operate</mwc-button>`
+          ]
+        }
+
+        operate () {
+          this.shadowRoot.querySelector('post-element').operate()
+        }
+      }
+      window.customElements.define('raw-element', RawElement)
+      // async function boom () {
+      //   const operables = [...canvas.querySelectorAll('*')].filter(el=>el.operate)
+      //   for (const el of operables) {
+      //     await el.operate()
+      //   }
+      // }
+
+      window.addEventListener('keydown', function (e) {
+        if (e.code == 'ArrowLeft') {
+          window.previousPage()
+        }
+        if (e.code == 'ArrowRight') {
+          window.nextPage()
+        }
+      })
+
+      window.previousPage = function () {
+        const pages = [...rawElement.shadowRoot.querySelector('post-element').shadowRoot.querySelectorAll('page-element')]
+        const active = pages.find(el=>el.active)
+        const activeIndex = pages.indexOf(active)
+        if (activeIndex == 0) {
+          return
+          pages[pages.length - 1].setAttribute('active', '')
+        }
+        else {
+          pages[activeIndex - 1].setAttribute('active', '')
+        }
+        active.removeAttribute('active')
+      }
+      window.nextPage = function () {
+        const pages = [...rawElement.shadowRoot.querySelector('post-element').shadowRoot.querySelectorAll('page-element')]
+        const active = pages.find(el=>el.active)
+        const activeIndex = pages.indexOf(active)
+        if (activeIndex >= pages.length - 1) {
+          return
+          pages[0].setAttribute('active', '')
+        }
+        else {
+          pages[activeIndex + 1].setAttribute('active', '')
+        }
+        active.removeAttribute('active')
+      }
+    </script>
+  </body>
+</html>
