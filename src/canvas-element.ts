@@ -17,6 +17,7 @@ export class CanvasElement extends LitElement {
     background-color: #ffedb7;
     position: relative;
     box-sizing: border-box;
+    overflow: hidden;
   }
   `
 

@@ -19138,6 +19138,7 @@ CanvasElement.styles = r$3 `
     background-color: #ffedb7;
     position: relative;
     box-sizing: border-box;
+    overflow: hidden;
   }
   `;
 CanvasElement = __decorate([
