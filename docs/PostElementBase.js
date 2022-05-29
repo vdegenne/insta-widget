@@ -1,4 +1,4 @@
-import { LitElement, html, globalStyles } from '../../app.js'
+import { LitElement, html, globalStyles } from './app.js'
 
 export class PostElementBase extends LitElement {
   static properties = {
