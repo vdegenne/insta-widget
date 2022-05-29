@@ -35,6 +35,7 @@ export class PostElement extends CarouselElement {
         </page-element>
         `
       })}
+      <span style="position:absolute;bottom:0;right:0;right:0;font-size:16px;">@chikojap</span>
     </canvas-element>
     ${super.template()}
     `
