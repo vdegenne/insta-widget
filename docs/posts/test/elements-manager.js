@@ -41,7 +41,9 @@ export class ElementsManager extends LitElement {
         `
       })}
 
-      <mwc-button outlined slot=secondaryAction icon=photo_camera
+      <mwc-button outlined slot="secondaryAction" icon="copy_all"
+          @click=${()=>{copyToClipboard(JSON.stringify(this.elements))}}>data</mwc-button>
+      <mwc-button outlined slot=secondaryAction icon="copy_all"
         @click=${()=>{this.copyInstaDescription()}}>insta</mwc-button>
       <mwc-button unelevated slot=secondaryAction icon=add
           @click=${()=>{this.createElementDialog.show()}}>element</mwc-button>
