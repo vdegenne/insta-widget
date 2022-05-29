@@ -31,7 +31,7 @@ export class PostElement extends CarouselElement {
   }
 
   controls () {
-    return html`<div style="min-width:200px;display:flex;align-items:center;margin-top:5px">${super.controls()}${this.elementsManager.elements[this.activePage].s}</div>`
+    return html`<div style="min-width:200px;display:flex;align-items:center;margin-top:5px">${super.controls()}${this.elementsManager.elements[this.activePage]?.s}</div>`
   }
 
   // async updated () {
