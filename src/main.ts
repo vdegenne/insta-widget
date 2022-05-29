@@ -13,7 +13,7 @@ import html2canvas from 'html2canvas'
 import {Slider} from "@material/mwc-slider";
 import 'vanilla-colorful'
 import { DesignStructure } from './types'
-import { convertTextToDesignStructure, DesignTemplate, play, playJapaneseAudio, sleep } from './util'
+import { convertTextToDesignStructure, DesignTemplate, play, playJapanese, playJapaneseAudio, sleep } from './util'
 import { designStyles } from './styles/designStyles'
 import './widget-span'
 import './difference-widget'
@@ -33,7 +33,7 @@ import copyToClipboard from '@vdegenne/clipboard-copy'
 // @ts-ignore
 window.html = html
 export {html, LitElement, globalStyles, css}
-export {sleep, play, playJapaneseAudio, speakJapanese, copyToClipboard}
+export {sleep, play, playJapaneseAudio, speakJapanese, playJapanese, copyToClipboard}
 
 declare global {
   interface Window {

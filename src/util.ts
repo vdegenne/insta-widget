@@ -142,18 +142,19 @@ export function play(text: string, beforeWaitMs = 0, pauseMs = 2000, afterWaitMs
     await sleep(beforeWaitMs)
     switch (type) {
       case 'auto':
-        try {
-          // @TODO : play appropriate language
-          await playJapaneseAudio(text)
-        } catch (e) {
-          // @TODO : play appropriate language
-          await speakJapanese(text, 1)
-        }
+        // try {
+        //   // @TODO : play appropriate language
+        //   await playJapaneseAudio(text)
+        // } catch (e) {
+        //   // @TODO : play appropriate language
+        //   await speakJapanese(text, 1)
+        // }
+        playJapanese(text)
         break
 
         case 'speech':
           // @TODO : play appropriate language
-          await speakJapanese(text, 1)
+          await speakJapanese(text)
           break
 
         case 'external':
@@ -174,4 +175,13 @@ export function highlightElement(el: HTMLElement) {
 }
 export function unhighlightElement(el: HTMLElement) {
   el.removeAttribute('hl')
+}
+
+
+export async function playJapanese (word: string) {
+  try {
+    await playJapaneseAudio(word)
+  } catch (e) {
+    await speakJapanese(word)
+  }
 }

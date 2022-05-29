@@ -32,3 +32,7 @@ export function generateOutlineStyle (color = '#000', r = 3) {
   return str
   // document.querySelector("#myoutlinedtext").style.textShadow = str
 }
+
+export function googleImageSearch (word) {
+  window.open(`http://www.google.com/search?q=${encodeURIComponent(word)}&tbm=isch`, '_blank')
+}

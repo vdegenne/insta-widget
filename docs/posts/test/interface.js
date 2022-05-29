@@ -1,4 +1,4 @@
-import { css, html } from '../../app.js'
+import { css, html, playJapanese } from '../../app.js'
 import { CarouselElement } from './CarouselElement.js'
 import { generateOutlineStyle } from '../../util.js'
 
@@ -31,7 +31,9 @@ export class PostElement extends CarouselElement {
   }
 
   controls () {
-    return html`<div style="min-width:200px;display:flex;align-items:center;margin-top:5px">${super.controls()}${this.elementsManager.elements[this.activePage]?.s}</div>`
+    return html`<div style="min-width:200px;display:flex;align-items:center;margin-top:5px">${super.controls()}
+    <mwc-button @click=${(e)=>{playJapanese(e.target.textContent)}}>${this.elementsManager.elements[this.activePage]?.s}</mwc-button>
+    </div>`
   }
 
   // async updated () {

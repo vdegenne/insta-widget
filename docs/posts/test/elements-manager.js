@@ -1,5 +1,5 @@
 import { html, LitElement, css, copyToClipboard } from '../../app.js'
-import { googleImageSearch } from './util.js'
+import { googleImageSearch } from '../../util.js'
 
 export class ElementsManager extends LitElement {
   static properties = {
