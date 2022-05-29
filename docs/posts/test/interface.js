@@ -19,7 +19,7 @@ export class PostElement extends CarouselElement {
     <style>
       w-span {
         position: absolute;
-        text-shadow: ${generateOutlineStyle('white', 8)};
+        text-shadow: ${generateOutlineStyle('white', 3)};
         font-weight: 500;
         /* font-size: 1.8em; */
       }
