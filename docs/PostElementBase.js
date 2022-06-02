@@ -49,6 +49,17 @@ export class PostElementBase extends LitElement {
     const canvas = this.shadowRoot.querySelector('canvas-element')
     canvas.style.marginTop = `${canvasTopMargin}px`
     this.shadowRoot.querySelector('mwc-slider').value = canvasTopMargin
+
+
+    window.addEventListener('keydown', (e) => {
+      // console.log(e)
+      if (e.code == 'ArrowLeft' || e.code == 'KeyA') {
+        this.activePage = window.previousPage()
+      }
+      if (e.code == 'ArrowRight' || e.code == 'KeyD') {
+        this.activePage = window.nextPage()
+      }
+    })
   }
 
 

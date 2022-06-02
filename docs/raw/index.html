@@ -54,14 +54,14 @@
       //   }
       // }
 
-      window.addEventListener('keydown', function (e) {
-        if (e.code == 'ArrowLeft') {
-          window.previousPage()
-        }
-        if (e.code == 'ArrowRight') {
-          window.nextPage()
-        }
-      })
+      // window.addEventListener('keydown', function (e) {
+      //   if (e.code == 'ArrowLeft') {
+      //     window.previousPage()
+      //   }
+      //   if (e.code == 'ArrowRight') {
+      //     window.nextPage()
+      //   }
+      // })
 
       window.previousPage = function () {
         const pages = [...rawElement.shadowRoot.querySelector('post-element').shadowRoot.querySelectorAll('page-element')]
