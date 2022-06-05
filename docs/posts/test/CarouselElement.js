@@ -10,10 +10,6 @@ export class CarouselElement extends PostElementBase {
     this.elementsManager.addEventListener('submit', () => { this.requestUpdate() })
   }
 
-  render() {
-    return html`${this.scaffold()}`
-  }
-
   template () {
     return html`${this.elementsManager}`
   }

@@ -29,6 +29,10 @@ export class PostElementBase extends LitElement {
     `
   }
 
+  render() {
+    return html`${this.scaffold()}`
+  }
+
 
   onSliderInput(e) {
     const el = this.shadowRoot.querySelector('canvas-element')

@@ -1335,7 +1335,7 @@ w-sep:last-of-type {
         opacity: 0;
         /* transition: opacity .7s linear; */
 
-        top: -24px;
+        /* top: -24px; */
       }
       :host([active]) {
         opacity: 1;
