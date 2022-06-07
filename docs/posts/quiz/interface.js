@@ -20,65 +20,95 @@ export class PostElement extends LitElement {
   }
   page-element {
     padding-top: 0;
+    border: 12px solid #b71c1c;
+    align-items: stretch;
   }
-  #controls {
-    margin-top: 4px;
-  }
+    header {
+      width: 100%;
+      font-size:3.5em;font-weight: 500;
+      display: flex;
+      align-items: center;
+      margin: 18px 0;
+    }
+    header > img {
+      margin: 0 24px 0 12px;
+    }
+    #center {
+      height:1px;flex:1;display:flex;justify-content:center;align-items:center;background-color:black;border-radius:22px;
+      overflow: hidden;
+      margin: 0 18px;
+    }
+    #center > img {
+      width:100%;
+    }
     #choices {
       display: flex;
-      justify-content: space-around;
+      justify-content: center;
       width: 100%;
-      padding: 0 50px;
       box-sizing: border-box;
+      /* flex: 1; */
+      margin: 18px 0;
     }
     .choice {
       display: flex;
       align-items: center;
+      margin: 0 12px;
     }
     .choice > div:first-of-type {
-      --choice-letter-size: 38px;
+      --choice-letter-size: 42px;
       display: flex;
       align-items: center;
       justify-content: center;
       width: var(--choice-letter-size);
       height: var(--choice-letter-size);
-      background-color: #283593;
-      color: white;
+      background-color: #ffc107;
+      color: #212121;
       border-radius: 5px;
+      margin-right: 12px;
+      font-weight: 600;
       /* font-weight: 500; */
     }
     .choice > w-span {
-      font-size: 4em;
+      font-size: 3em;
       font-weight: 500;
+      color: #212121;
       position: relative;
       top: -7px;
-      margin: 0 50px 0 12px;
+      font-family: cursive; /* , 'Rampart One'; */
+      -webkit-text-stroke: thin;
     }
     .choice:last-of-type > w-span {
       margin-right: 0;
+    }
+    #controls {
+      margin-top: 4px;
     }
   `]
 
   render() {
     const choices = this.params.choices.split('/')
-    const answer = choices.find((c, i)=>{
-      if (c[0] == '$') {
-        choices[i] = c.substring(1)
-        return true
-      }
-      return false
-    }).slice(1)
-    console.log(choices, answer)
+    let answer, question
+    let answerIndex = choices.findIndex(c=>c.startsWith('$'))
+    if (answerIndex >= 0) {
+      answer = choices[answerIndex].slice(1)
+      choices[answerIndex] = answer
+    }
+    let questionIndex = choices.findIndex(c=>c.startsWith('?'))
+    if (questionIndex >= 0) {
+      question = choices.splice(questionIndex, 1)[0].slice(1)
+      // choices[questionIndex] = question
+    }
+    console.log(choices, answer, question)
     return html`
     <canvas-element>
       <page-element active flex column>
-        <div style="font-size:3.5em;margin:8px 0;font-weight: 500;"><span style="color:#b71c1c">Kanji</span> Quiz</div>
-        ${this.params.img ? html`
-        <div style="height:1px;flex:1;display:flex;justify-content:center;align-items:center">
-          <img src="${this.params.img}" style="height:100%;border-radius:22px">
-          <div style="position:absolute;font-size:6em;color:white">?</div>
+        <header><img src="./images/jp_flag2.png"><span style="color:#b71c1c;margin-right:12px;">Kanji</span><span>Quiz</span></header>
+        <div id=center>
+          ${this.params.img ? html`
+            <img src="${this.params.img}" style="border-radius:22px">
+            <div style="position:absolute;font-size:3em;color:white;-webkit-text-stroke:thin black;">${question || ''}?</div>
+          ` : ''}
         </div>
-        ` : ''}
         <div id=choices>
         ${choices.map((c, i) => html`
           <div class=choice>
@@ -87,6 +117,8 @@ export class PostElement extends LitElement {
           </div>
         `)}
         </div>
+
+        <div style="position:absolute;bottom:0;right:0;color:#b71c1c;opacity:0.5">@chikojap</div>
       </page-element>
     </canvas-element>
     <div id="controls">
