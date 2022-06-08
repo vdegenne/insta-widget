@@ -22,6 +22,7 @@ import './widget-card'
 import './widget-line'
 import './widget-separator'
 import './page-element'
+import './jlpt-tag'
 // import '@material/mwc-icon-button'
 // import '@material/mwc-dialog'
 // import '@material/mwc-textfield'
@@ -29,6 +30,7 @@ import './page-element'
 import './posts/kaidan-nedan'
 import { speakJapanese } from './speech'
 import copyToClipboard from '@vdegenne/clipboard-copy'
+import './constellation/constellation-element'
 
 // @ts-ignore
 window.html = html

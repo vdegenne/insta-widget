@@ -28,7 +28,7 @@ export class ElementsManager extends LitElement {
       ${this.elements.map((el,i)=> {
         return html`
         <div class="element" style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;font-size:1.4em">
-          <span @click=${()=>{this.onElementClick(el)}}>${el.w}/${el.s}/${el.m}</span>
+          <span @click=${()=>{this.onElementClick(el)}}>${el.w}/${el.s}/${el.m}/${el.j}</span>
           <div style="white-space:nowrap">
             <mwc-icon-button icon=arrow_upward
               @click=${()=>{this.onArrowUpwardClick(i)}}></mwc-icon-button>
@@ -55,6 +55,7 @@ export class ElementsManager extends LitElement {
       <mwc-textfield outlined id=w label="word" @keyup=${()=>{this.onTextFieldKeyPress()}}></mwc-textfield>
       <mwc-textfield outlined id=s label="secondary" @keyup=${()=>{this.onTextFieldKeyPress()}}></mwc-textfield>
       <mwc-textfield outlined id=m label="meaning" @keyup=${()=>{this.onTextFieldKeyPress()}}></mwc-textfield>
+      <mwc-textfield outlined id=j label="jlpt" @keyup=${()=>{this.onTextFieldKeyPress()}}></mwc-textfield>
       <mwc-textfield outlined id=i label="image (url)" @keyup=${()=>{this.onTextFieldKeyPress()}}></mwc-textfield>
 
       <mwc-button outlined slot=secondaryAction icon=travel_explore
@@ -67,12 +68,14 @@ export class ElementsManager extends LitElement {
   }
 
   onElementClick (element) {
-    const input = prompt('change info', `${element.w}/${element.s}/${element.m}`)
+    const input = prompt('change info', `${element.w}/${element.s}/${element.m}/${element.j}`)
     if (input) {
-      const [w, s, m] = input.split('/')
+      const [w, s, m, j] = input.split('/')
       element.w = w
       element.s = s
       element.m = m
+      element.j = j
+      console.log(element)
     }
 
     this.saveLocalStorage()

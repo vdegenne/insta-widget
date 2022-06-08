@@ -23,12 +23,15 @@ export class PageElement extends LitElement {
         position: absolute; top: 0; left: 0; right: 0; bottom: 0;
 
         opacity: 0;
+        pointer-events: none;
+        /* visibility: hidden; */
         /* transition: opacity .7s linear; */
 
         /* top: -24px; */
       }
       :host([active]) {
         opacity: 1;
+        pointer-events: initial;
       }
     </style><slot></slot>`
   }

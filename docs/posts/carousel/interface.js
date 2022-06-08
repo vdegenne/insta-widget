@@ -1,6 +1,7 @@
 import { css, html, playJapanese } from '../../app.js'
 import { CarouselElement } from './CarouselElement.js'
 import { generateOutlineStyle } from '../../util.js'
+import Kuroshiro from '../../node_modules/kuroshiro/src/index.js'
 
 export class PostElement extends CarouselElement {
 
@@ -8,24 +9,36 @@ export class PostElement extends CarouselElement {
   canvas-element {
     font-size: 74px;
     background-color: white;
+    border: inset 10px black;
   }
   page-element {
     padding: 0;
+  }
+  header {
+    position:absolute;top:0;box-sizing:border-box;align-items:flex-start;
+  }
+  jlpt-tag {
+    border-right: 4px solid #000;
+    border-bottom: 4px solid #000;
+    margin-right: 18px;
   }
   `]
 
   template() {
     return html`
     <style>
+      w-span {
+        text-shadow: ${generateOutlineStyle('white', 3)};
+      }
       .card > w-span {
         position: absolute;
-        text-shadow: ${generateOutlineStyle('white', 3)};
         font-weight: 500;
         /* font-size: 1.8em; */
       }
     </style>
     <canvas-element>
-      <page-element active flex style="flex-wrap:wrap">
+      <!-- <div id=frame style="position: absolute;top:0;left:0;right:0;bottom:0;border:inset 10px black;z-index:10;"></div> -->
+      <page-element flex style="flex-wrap:wrap;justify-content:space-between">
         ${this.elementsManager.elements.map((el, i) => {
           return html`
           <img src="${el.i}" width=50% style="max-width: 210px">
@@ -34,11 +47,22 @@ export class PostElement extends CarouselElement {
       </page-element>
       ${this.elementsManager.elements.map((el, i) => {
         return html`
-        <page-element flex class=card>
-          <img src="${el.i}" @load=${(e)=>{this.resizeImage(e.target)}}/>
-          <w-span t=${el.w} style="top:26px;left:12px;" fs=2em></w-span>
-          <w-span t=${el.s} style="top:26px;right:12px;" fs=1.2em></w-span>
-          <w-span t=${el.m} style="bottom:18px" fs=1.8em></w-span>
+        <page-element flex class=card ?active=${i==0} style="">
+          <div flex style="position:relative;width:100%;">
+            <img src="${el.i}" @load=${(e)=>{this.resizeImage(e.target)}} style="display:block"/>
+            <span style="position:absolute;bottom:0;left:0;font-size:16px;color:grey">@chikojap</span>
+          </div>
+          <header flex fullwidth style="align-items:flex-start;justify-content:flex-start">
+            <jlpt-tag n=${el.j}></jlpt-tag>
+            <div flex between fullwidth style="padding-right: 24px;">
+              <w-span t=${el.w} fs=3em style="margin-right:24px"></w-span>
+              <div flex column>
+                <w-span t=${el.s} fs=1.4em c=grey></w-span>
+                <w-span t="[${Kuroshiro.Util.toRawRomaji(el.s)}]" fs=1.2em c=grey></w-span>
+              </div>
+            </div>
+          </header>
+          <w-span t=${el.m} style="bottom:19px" fs=1.8em></w-span>
         </page-element>
         `
       })}
@@ -46,7 +70,6 @@ export class PostElement extends CarouselElement {
         <w-span t="Click the ❤️ icon"></w-span>
         <w-span t="to support free content"></w-span>
       </page-element>
-      <span style="position:absolute;bottom:0;right:0;right:0;font-size:16px;">@chikojap</span>
     </canvas-element>
     ${super.template()}
     `

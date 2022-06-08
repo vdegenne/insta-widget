@@ -1,2 +1,11 @@
 node_modules
-.idea
+!docs/node_modules
+docs/node_modules/**
+!docs/node_modules/fabric
+docs/node_modules/fabric/**
+!docs/node_modules/fabric/dist
+!docs/node_modules/fabric/dist/**
+!docs/node_modules/kuroshiro
+docs/node_modules/kuroshiro/**
+!docs/node_modules/kuroshiro/src
+!docs/node_modules/kuroshiro/src/**
