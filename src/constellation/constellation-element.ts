@@ -12,7 +12,41 @@ export class ConstellationElement extends LitElement {
   descriptionBox!: fabric.IText
   private lines: fabric.Line[] = []
   private points: fabric.Circle[] = []
-  @property() highlightColor = 'orange'
+
+  private _darkMode = false;
+  set darkMode(dark: boolean) {
+    this._darkMode = dark
+    if (['white', 'black', '#fff', '#000'].includes(this.textColor)) {
+      this.textColor = dark ? 'white' : 'black';
+    }
+  }
+  @property({type:Boolean, reflect: true}) get darkMode() { return this._darkMode; }
+
+  private _highlightColor = 'red'
+  set highlightColor (value: string) {
+    // @ts-ignore
+    const highlighted = this.points.find(p=>p.Text.get('fill') == this._highlightColor)
+    this._highlightColor = value;
+    if (highlighted) {
+      // @ts-ignore
+      highlighted.Text.set({fill:value})
+      this.renderAll()
+    }
+  }
+  @property() get highlightColor () { return this._highlightColor; }
+
+  private _textColor = this.darkMode ? 'white' : 'black'
+  set textColor (value: string) {
+    // @ts-ignore
+    const notHighlighted = this.points.filter(p=>p.Text.get('fill') != this._highlightColor);
+    this._textColor = value
+    if (notHighlighted.length > 0) {
+      // @ts-ignore
+      notHighlighted.forEach(p=>p.Text.set({'fill': value}))
+      this.renderAll()
+    }
+  }
+  @property() get textColor () { return this._textColor; }
 
 
   // @query('canvas') canvasElement!: HTMLCanvasElement;
@@ -30,6 +64,9 @@ export class ConstellationElement extends LitElement {
     background-color: white;
     width: 640px;
     height: 640px;
+  }
+  :host([darkMode]) #canvas {
+    background-color: black;
   }
   `
   render() {
@@ -69,10 +106,10 @@ export class ConstellationElement extends LitElement {
     });
   }
 
-  addLineToCanvas(line: Line, strokeWidth = 10) {
+  addLineToCanvas(line: Line, strokeWidth = 5) {
     const lineObject = new fabric.Line(line, {
       strokeWidth,
-      stroke: '#000',
+      stroke: this.darkMode ? '#fff' : '#000',
     })
     this.canvas.add(lineObject)
     return lineObject;
@@ -82,8 +119,8 @@ export class ConstellationElement extends LitElement {
     const circle = new fabric.Circle({
       left: x,
       top: y,
-      radius,
-      strokeWidth: 3,
+      radius: radius + (this.darkMode ? 5 : 0),
+      strokeWidth: this.darkMode ? 10 : 3,
       stroke: '#000',
       fill: '#fff'
     })
@@ -146,19 +183,21 @@ export class ConstellationElement extends LitElement {
     return [randomNumber(padding, 640 - padding), randomNumber(padding, 640 - padding)]
   }
 
-  addTextToCanvas(x = 0, y = 0, text: string = 'text', color = '#000') {
+  addTextToCanvas(x = 0, y = 0, text: string = 'text', color = this.textColor) {
     const itext = new fabric.IText(text, { left: x, top: y,
       fontFamily: 'Noto Serif JP',
-      // fontWeight: 'bold',
-      fill: color
+      fontWeight: 'bold',
+      originX: 'left',
+      originY: 'top',
+      fill: color,
     })
     this.canvas.add(itext)
     // itext.setCoords()
     return itext
   }
 
-  setDescription (description, fontFamily = 'Arial') {
-    this.descriptionBox.text = description
+  setDescription (description, fontFamily = 'Noto Serif JP') {
+    this.descriptionBox.set({ text: description })
     if (fontFamily) {
       this.descriptionBox.set({'fontFamily': fontFamily, fontWeight: 'normal'})
     }
@@ -166,16 +205,28 @@ export class ConstellationElement extends LitElement {
     this.descriptionBox.setCoords()
   }
 
-  highlightPoint (index) {
+  highlightPoint(index, background = '#05244d') {
     this.points.forEach(point => {
       // @ts-ignore
-      point.Text.set({ fill: 'initial' })
+      ;(point.Text as fabric.IText).exitEditing()
+      return
+      // @ts-ignore
+      point.Text.set({
+        // fill: this.textColor,
+        backgroundColor: 'rgba(0,0,0,0)'
+      })
       point.set({stroke: 'initial'})
     })
     const point = this.points[index];
     if (point) {
       // @ts-ignore
-      point.Text.set({ fill: this.highlightColor })
+      point.Text.enterEditing().selectAll()
+      return
+      // @ts-ignore
+      point.Text.set({
+        // fill: this.highlightColor,
+        backgroundColor: background
+      })
       point.set({stroke: this.highlightColor})
     }
     this.renderAll()

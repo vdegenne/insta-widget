@@ -1,4 +1,4 @@
-import {LitElement, html} from '../../app.js'
+import {LitElement, html, playJapanese} from '../../app.js'
 import '../../data-set-interface.js'
 
 class PostElement extends LitElement {
@@ -10,22 +10,55 @@ class PostElement extends LitElement {
 
   render() {
     return html`
-    <constellation-element
-      highlightColor="#e91e63"
-    ></constellation-element>
+    <div style="position: relative;">
+      <div style="position: absolute;bottom:0;left:0;z-index:999;color:white">@chikojap</div>
+      <constellation-element
+        darkMode
+        highlightColor="orange"
+      ></constellation-element>
+    </div>
     <mwc-icon-button icon=settings
       @click=${()=>{this.dataSetInterface.show()}}></mwc-icon-button>
+    <mwc-icon-button icon=casino @click=${()=>{this.updateConstellation(this.elements)}}></mwc-icon-button>
+    <mwc-icon-button icon=volume_up @click=${()=>{this.playAudio()}}></mwc-icon-button>
     <mwc-icon-button icon=arrow_backward @click=${()=>{this.onArrowBackwardClick()}}></mwc-icon-button>
     <mwc-icon-button icon=arrow_forward @click=${()=>{this.onArrowForwardClick()}}></mwc-icon-button>
     <data-set-interface
-      blueprint='[["word"], ["hiragana"]]'
+      blueprint='[["word"], ["hiragana"], ["meaning"]]'
       localStorageHandle="insta-widget:constellation"
       @load=${(e)=>{const detail = e.detail; setTimeout((e)=>this.updateConstellation(detail), 500)}}
       @submit=${(e)=>{this.updateConstellation(e.detail)}}></data-set-interface>
     `
   }
 
+  firstUpdated () {
+    window.addEventListener('keydown', e=> {
+      if (e.composedPath()[0].nodeName == 'INPUT') { return }
+      // console.log(e)
+      if (e.code == 'KeyA') {
+        e.preventDefault()
+        this.onArrowBackwardClick()
+      }
+      if (e.code == 'KeyD') {
+        e.preventDefault()
+        this.onArrowForwardClick()
+      }
+      if (e.code == 'KeyS') {
+        e.preventDefault()
+        this.playAudio()
+      }
+    })
+  }
+
+  playAudio () {
+    const element = this.elements[this.index]
+    if (element) {
+      playJapanese(element.hiragana)
+    }
+  }
+
   updateConstellation(elements) {
+    this.index = -1
     this.constellation.createNewMap(elements.map(el=>el.word))
     this.elements = elements
   }
@@ -34,14 +67,16 @@ class PostElement extends LitElement {
     this.index++;
     this.constellation.highlightPoint(this.index)
     // try {
-      this.constellation.setDescription(this.elements[this.index]?.hiragana || '')
+      const element = this.elements[this.index]
+      this.constellation.setDescription(element ? `${element.hiragana}\n${element.meaning}` : '')
     // } catch (e) {}
   }
   onArrowBackwardClick() {
     this.index--;
     this.constellation.highlightPoint(this.index)
     // try {
-      this.constellation.setDescription(this.elements[this.index]?.hiragana || '')
+      const element = this.elements[this.index]
+      this.constellation.setDescription(element ? `${element.hiragana}\n${element.meaning}` : '')
     // } catch (e) {}
   }
 }
