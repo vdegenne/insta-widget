@@ -19211,14 +19211,35 @@ let ConstellationElement = class ConstellationElement extends s$1 {
     descriptionBox;
     lines = [];
     points = [];
-    _darkMode = false;
-    set darkMode(dark) {
-        this._darkMode = dark;
-        if (['white', 'black', '#fff', '#000'].includes(this.textColor)) {
-            this.textColor = dark ? 'white' : 'black';
+    _backgroundColor = 'white';
+    set backgroundColor(color) {
+        this._backgroundColor = color;
+        if (this.canvas) {
+            this.canvas.setBackgroundColor(color, () => { });
+            this.renderAll();
         }
     }
-    get darkMode() { return this._darkMode; }
+    get backgroundColor() { return this._backgroundColor; }
+    _textColor = 'black';
+    set textColor(value) {
+        // @ts-ignore
+        const notHighlighted = this.points.filter(p => p.Text.get('fill') != this._highlightColor);
+        this._textColor = value;
+        if (notHighlighted.length > 0) {
+            // @ts-ignore
+            notHighlighted.forEach(p => p.Text.set({ 'fill': value }));
+            this.renderAll();
+        }
+    }
+    get textColor() { return this._textColor; }
+    _lineColor = 'black';
+    set lineColor(value) {
+        const lines = this.lines;
+        this._lineColor = value;
+        lines.forEach(line => line.set({ stroke: value }));
+        this.renderAll();
+    }
+    get lineColor() { return this._lineColor; }
     _highlightColor = 'red';
     set highlightColor(value) {
         // @ts-ignore
@@ -19231,34 +19252,17 @@ let ConstellationElement = class ConstellationElement extends s$1 {
         }
     }
     get highlightColor() { return this._highlightColor; }
-    _textColor = this.darkMode ? 'white' : 'black';
-    set textColor(value) {
-        // @ts-ignore
-        const notHighlighted = this.points.filter(p => p.Text.get('fill') != this._highlightColor);
-        this._textColor = value;
-        if (notHighlighted.length > 0) {
-            // @ts-ignore
-            notHighlighted.forEach(p => p.Text.set({ 'fill': value }));
-            this.renderAll();
-        }
-    }
-    get textColor() { return this._textColor; }
     // @query('canvas') canvasElement!: HTMLCanvasElement;
-    get canvasElement() {
-        return this.shadowRoot.querySelector('canvas');
-    }
+    get canvasElement() { return this.shadowRoot.querySelector('canvas'); }
     static styles = r$3 `
   :host {
     display: block;
     position: relative;
   }
   #canvas {
-    background-color: white;
+    /* background-color: white; */
     width: 640px;
     height: 640px;
-  }
-  :host([darkMode]) #canvas {
-    background-color: black;
   }
   `;
     render() {
@@ -19274,7 +19278,7 @@ let ConstellationElement = class ConstellationElement extends s$1 {
     }
     async firstUpdated(_changedProperties) {
         await sleep(500);
-        this.canvas = new fabric.Canvas(this.canvasElement);
+        this.canvas = new fabric.Canvas(this.canvasElement, { backgroundColor: this.backgroundColor });
         fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
         this.canvas.on('object:moving', (e) => {
             var p = e.target;
@@ -19294,10 +19298,10 @@ let ConstellationElement = class ConstellationElement extends s$1 {
             // }
         });
     }
-    addLineToCanvas(line, strokeWidth = 5) {
+    addLineToCanvas(line, strokeWidth = 5, color = this.lineColor) {
         const lineObject = new fabric.Line(line, {
             strokeWidth,
-            stroke: this.darkMode ? '#fff' : '#000',
+            stroke: color
         });
         this.canvas.add(lineObject);
         return lineObject;
@@ -19306,10 +19310,10 @@ let ConstellationElement = class ConstellationElement extends s$1 {
         const circle = new fabric.Circle({
             left: x,
             top: y,
-            radius: radius + (this.darkMode ? 5 : 0),
-            strokeWidth: this.darkMode ? 10 : 3,
+            radius: radius,
+            strokeWidth: 3,
             stroke: '#000',
-            fill: '#fff'
+            fill: 'white'
         });
         this.canvas.add(circle);
         return circle;
@@ -19317,7 +19321,9 @@ let ConstellationElement = class ConstellationElement extends s$1 {
     clear() {
         this.lines = [];
         this.points = [];
-        this.canvas.clear();
+        this.canvas.getObjects().forEach(o => {
+            this.canvas.remove(o);
+        });
     }
     createNewMap(elements) {
         if (elements.length === 0)
@@ -19369,7 +19375,7 @@ let ConstellationElement = class ConstellationElement extends s$1 {
     addTextToCanvas(x = 0, y = 0, text = 'text', color = this.textColor) {
         const itext = new fabric.IText(text, { left: x, top: y,
             fontFamily: 'Noto Serif JP',
-            fontWeight: 'bold',
+            // fontWeight: 'bold',
             originX: 'left',
             originY: 'top',
             fill: color,
@@ -19399,20 +19405,36 @@ let ConstellationElement = class ConstellationElement extends s$1 {
         }
         this.renderAll();
     }
+    saveToPng() {
+        const url = this.canvas.toDataURL({
+            format: 'png',
+            left: 0,
+            top: 0,
+            width: this.canvas.width,
+            height: this.canvas.height
+        });
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'test.png';
+        a.click();
+    }
     /** GETTERS */
     get selection() {
         return this.canvas.getActiveObject();
     }
 };
 __decorate([
-    e$6({ type: Boolean, reflect: true })
-], ConstellationElement.prototype, "darkMode", null);
-__decorate([
     e$6()
-], ConstellationElement.prototype, "highlightColor", null);
+], ConstellationElement.prototype, "backgroundColor", null);
 __decorate([
     e$6()
 ], ConstellationElement.prototype, "textColor", null);
+__decorate([
+    e$6()
+], ConstellationElement.prototype, "lineColor", null);
+__decorate([
+    e$6()
+], ConstellationElement.prototype, "highlightColor", null);
 ConstellationElement = __decorate([
     n$2('constellation-element')
 ], ConstellationElement);

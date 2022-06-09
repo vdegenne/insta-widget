@@ -13,7 +13,9 @@ class PostElement extends LitElement {
     <div style="position: relative;">
       <div style="position: absolute;bottom:0;left:0;z-index:999;color:white">@chikojap</div>
       <constellation-element
-        darkMode
+        backgroundColor="blue"
+        textColor="white"
+        lineColor="white"
         highlightColor="orange"
       ></constellation-element>
     </div>
@@ -23,6 +25,11 @@ class PostElement extends LitElement {
     <mwc-icon-button icon=volume_up @click=${()=>{this.playAudio()}}></mwc-icon-button>
     <mwc-icon-button icon=arrow_backward @click=${()=>{this.onArrowBackwardClick()}}></mwc-icon-button>
     <mwc-icon-button icon=arrow_forward @click=${()=>{this.onArrowForwardClick()}}></mwc-icon-button>
+    <mwc-icon-button icon=save @click=${()=>{this.saveToPng()}}></mwc-icon-button>
+    <hex-color-picker style="display: inline-flex;max-height:100px"
+        @color-changed=${e=>this.constellation.backgroundColor=e.detail.value}></hex-color-picker>
+    <hex-color-picker style="display: inline-flex;max-height:100px"
+        @color-changed=${e=>{this.constellation.textColor=e.detail.value;this.constellation.lineColor=e.detail.value}}></hex-color-picker>
     <data-set-interface
       blueprint='[["word"], ["hiragana"], ["meaning"]]'
       localStorageHandle="insta-widget:constellation"
@@ -55,6 +62,10 @@ class PostElement extends LitElement {
     if (element) {
       playJapanese(element.hiragana)
     }
+  }
+
+  saveToPng () {
+    this.constellation.saveToPng()
   }
 
   updateConstellation(elements) {

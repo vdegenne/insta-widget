@@ -13,14 +13,38 @@ export class ConstellationElement extends LitElement {
   private lines: fabric.Line[] = []
   private points: fabric.Circle[] = []
 
-  private _darkMode = false;
-  set darkMode(dark: boolean) {
-    this._darkMode = dark
-    if (['white', 'black', '#fff', '#000'].includes(this.textColor)) {
-      this.textColor = dark ? 'white' : 'black';
+
+  private _backgroundColor = 'white'
+  set backgroundColor(color: string) {
+    this._backgroundColor = color
+    if (this.canvas) {
+      this.canvas.setBackgroundColor(color, ()=>{})
+      this.renderAll()
     }
   }
-  @property({type:Boolean, reflect: true}) get darkMode() { return this._darkMode; }
+  @property() get backgroundColor() { return this._backgroundColor }
+
+  private _textColor = 'black'
+  set textColor (value: string) {
+    // @ts-ignore
+    const notHighlighted = this.points.filter(p=>p.Text.get('fill') != this._highlightColor);
+    this._textColor = value
+    if (notHighlighted.length > 0) {
+      // @ts-ignore
+      notHighlighted.forEach(p=>p.Text.set({'fill': value}))
+      this.renderAll()
+    }
+  }
+  @property() get textColor () { return this._textColor; }
+
+  private _lineColor = 'black';
+  set lineColor (value: string) {
+    const lines = this.lines
+    this._lineColor = value
+    lines.forEach(line => line.set({ stroke : value }))
+    this.renderAll()
+  }
+  @property() get lineColor () { return this._lineColor; }
 
   private _highlightColor = 'red'
   set highlightColor (value: string) {
@@ -35,24 +59,8 @@ export class ConstellationElement extends LitElement {
   }
   @property() get highlightColor () { return this._highlightColor; }
 
-  private _textColor = this.darkMode ? 'white' : 'black'
-  set textColor (value: string) {
-    // @ts-ignore
-    const notHighlighted = this.points.filter(p=>p.Text.get('fill') != this._highlightColor);
-    this._textColor = value
-    if (notHighlighted.length > 0) {
-      // @ts-ignore
-      notHighlighted.forEach(p=>p.Text.set({'fill': value}))
-      this.renderAll()
-    }
-  }
-  @property() get textColor () { return this._textColor; }
-
-
   // @query('canvas') canvasElement!: HTMLCanvasElement;
-  get canvasElement(): HTMLCanvasElement {
-    return this.shadowRoot!.querySelector('canvas')!
-  }
+  get canvasElement(): HTMLCanvasElement { return this.shadowRoot!.querySelector('canvas')! }
 
 
   static styles = css`
@@ -61,12 +69,9 @@ export class ConstellationElement extends LitElement {
     position: relative;
   }
   #canvas {
-    background-color: white;
+    /* background-color: white; */
     width: 640px;
     height: 640px;
-  }
-  :host([darkMode]) #canvas {
-    background-color: black;
   }
   `
   render() {
@@ -85,7 +90,7 @@ export class ConstellationElement extends LitElement {
 
   protected async firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): Promise<void> {
     await sleep(500)
-    this.canvas = new fabric.Canvas(this.canvasElement)
+    this.canvas = new fabric.Canvas(this.canvasElement, { backgroundColor: this.backgroundColor })
     fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
     this.canvas.on('object:moving', (e) => {
       var p = e.target as any;
@@ -106,10 +111,10 @@ export class ConstellationElement extends LitElement {
     });
   }
 
-  addLineToCanvas(line: Line, strokeWidth = 5) {
+  addLineToCanvas(line: Line, strokeWidth = 5, color = this.lineColor) {
     const lineObject = new fabric.Line(line, {
       strokeWidth,
-      stroke: this.darkMode ? '#fff' : '#000',
+      stroke: color
     })
     this.canvas.add(lineObject)
     return lineObject;
@@ -119,10 +124,10 @@ export class ConstellationElement extends LitElement {
     const circle = new fabric.Circle({
       left: x,
       top: y,
-      radius: radius + (this.darkMode ? 5 : 0),
-      strokeWidth: this.darkMode ? 10 : 3,
+      radius: radius,
+      strokeWidth: 3,
       stroke: '#000',
-      fill: '#fff'
+      fill: 'white'
     })
     this.canvas.add(circle)
     return circle
@@ -131,7 +136,9 @@ export class ConstellationElement extends LitElement {
   clear () {
     this.lines = []
     this.points = []
-    this.canvas.clear()
+    this.canvas.getObjects().forEach(o=>{
+      this.canvas.remove(o)
+    })
   }
 
   createNewMap (elements: string[]) {
@@ -186,7 +193,7 @@ export class ConstellationElement extends LitElement {
   addTextToCanvas(x = 0, y = 0, text: string = 'text', color = this.textColor) {
     const itext = new fabric.IText(text, { left: x, top: y,
       fontFamily: 'Noto Serif JP',
-      fontWeight: 'bold',
+      // fontWeight: 'bold',
       originX: 'left',
       originY: 'top',
       fill: color,
@@ -230,6 +237,20 @@ export class ConstellationElement extends LitElement {
       point.set({stroke: this.highlightColor})
     }
     this.renderAll()
+  }
+
+  saveToPng () {
+    const url =  this.canvas.toDataURL({
+      format: 'png',
+      left: 0,
+      top: 0,
+      width: this.canvas.width,
+      height: this.canvas.height
+    })
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'test.png'
+    a.click()
   }
 
   /** GETTERS */

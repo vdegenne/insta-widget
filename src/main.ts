@@ -31,6 +31,7 @@ import './posts/kaidan-nedan'
 import { speakJapanese } from './speech'
 import copyToClipboard from '@vdegenne/clipboard-copy'
 import './constellation/constellation-element'
+import 'vanilla-colorful'
 
 // @ts-ignore
 window.html = html
