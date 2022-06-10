@@ -9,7 +9,7 @@ export class PostElement extends CarouselElement {
   canvas-element {
     font-size: 74px;
     background-color: white;
-    border: inset 10px black;
+    /* border: inset 10px black; */
   }
   page-element {
     padding: 0;
