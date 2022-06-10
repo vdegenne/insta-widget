@@ -19,6 +19,7 @@ export class ConstellationElement extends LitElement {
     this._backgroundColor = color
     if (this.canvas) {
       this.canvas.setBackgroundColor(color, ()=>{})
+      this.points.forEach(point => point.set({ fill: color }))
       this.renderAll()
     }
   }
@@ -42,6 +43,7 @@ export class ConstellationElement extends LitElement {
     const lines = this.lines
     this._lineColor = value
     lines.forEach(line => line.set({ stroke : value }))
+    this.points.forEach(point => point.set({ stroke : value }))
     this.renderAll()
   }
   @property() get lineColor () { return this._lineColor; }
@@ -120,13 +122,13 @@ export class ConstellationElement extends LitElement {
     return lineObject;
   }
 
-  addCircleToCanvas(x = 0, y = 0, radius = 8) {
+  addCircleToCanvas(x = 0, y = 0, radius = 8, stroke = this.textColor) {
     const circle = new fabric.Circle({
       left: x,
       top: y,
       radius: radius,
       strokeWidth: 3,
-      stroke: '#000',
+      stroke,
       fill: 'white'
     })
     this.canvas.add(circle)
@@ -245,7 +247,8 @@ export class ConstellationElement extends LitElement {
       left: 0,
       top: 0,
       width: this.canvas.width,
-      height: this.canvas.height
+      height: this.canvas.height,
+      multiplier: 2
     })
     const a = document.createElement('a')
     a.href = url

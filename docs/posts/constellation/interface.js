@@ -4,6 +4,8 @@ import '../../data-set-interface.js'
 class PostElement extends LitElement {
   index = -1
   elements = []
+  backgroundColor = '#fff'
+  textColor = '#00f'
 
   get constellation () { return this.shadowRoot.querySelector('constellation-element'); }
   get dataSetInterface () { return this.shadowRoot.querySelector('data-set-interface'); }
@@ -13,9 +15,9 @@ class PostElement extends LitElement {
     <div style="position: relative;">
       <div style="position: absolute;bottom:0;left:0;z-index:999;color:white">@chikojap</div>
       <constellation-element
-        backgroundColor="blue"
-        textColor="white"
-        lineColor="white"
+        backgroundColor=${this.backgroundColor}
+        textColor=${this.textColor}
+        lineColor=${this.textColor}
         highlightColor="orange"
       ></constellation-element>
     </div>
@@ -26,10 +28,17 @@ class PostElement extends LitElement {
     <mwc-icon-button icon=arrow_backward @click=${()=>{this.onArrowBackwardClick()}}></mwc-icon-button>
     <mwc-icon-button icon=arrow_forward @click=${()=>{this.onArrowForwardClick()}}></mwc-icon-button>
     <mwc-icon-button icon=save @click=${()=>{this.saveToPng()}}></mwc-icon-button>
+    <div style="text-align: center">
     <hex-color-picker style="display: inline-flex;max-height:100px"
+        color="${this.backgroundColor}"
         @color-changed=${e=>this.constellation.backgroundColor=e.detail.value}></hex-color-picker>
     <hex-color-picker style="display: inline-flex;max-height:100px"
-        @color-changed=${e=>{this.constellation.textColor=e.detail.value;this.constellation.lineColor=e.detail.value}}></hex-color-picker>
+        color="${this.textColor}"
+        @color-changed=${e=>{
+          this.constellation.textColor=e.detail.value;
+          this.constellation.lineColor=e.detail.value
+        }}></hex-color-picker>
+    </div>
     <data-set-interface
       blueprint='[["word"], ["hiragana"], ["meaning"]]'
       localStorageHandle="insta-widget:constellation"
