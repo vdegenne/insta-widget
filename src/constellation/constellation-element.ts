@@ -252,7 +252,7 @@ export class ConstellationElement extends LitElement {
     })
     const a = document.createElement('a')
     a.href = url
-    a.download = 'test.png'
+    a.download = `constellation-${Date.now()}.png`
     a.click()
   }
 
