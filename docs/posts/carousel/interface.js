@@ -48,7 +48,7 @@ export class PostElement extends CarouselElement {
       ${this.elementsManager.elements.map((el, i) => {
         return html`
         <page-element flex class=card ?active=${i==0} style="">
-          <div flex style="position:relative;width:100%;">
+          <div flex style="position:relative;width:100%;height:75%;">
             <img src="${el.i}" @load=${(e)=>{this.resizeImage(e.target)}} style="display:block"/>
             <span style="position:absolute;bottom:0;left:0;font-size:16px;color:grey">@chikojap</span>
           </div>
