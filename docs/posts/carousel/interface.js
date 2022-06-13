@@ -77,7 +77,7 @@ export class PostElement extends CarouselElement {
 
   controls () {
     return html`<div style="min-width:200px;display:flex;align-items:center;margin-top:5px">${super.controls()}
-    <mwc-button id=audioButton @click=${(e)=>{playJapanese(e.target.textContent)}}>${this.elementsManager.elements[this.activePage - 1]?.s}</mwc-button>
+    <mwc-button id=audioButton @click=${(e)=>{playJapanese(e.target.textContent, 1)}}>${this.elementsManager.elements[this.activePage - 1]?.s}</mwc-button>
     </div>`
   }
 

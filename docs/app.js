@@ -16486,7 +16486,7 @@ function DesignTemplate(struct) {
   `;
 }
 const audioMap = {};
-async function playJapaneseAudio(word) {
+async function playJapaneseAudio(word, volume = 1) {
     let audio;
     if (word in audioMap) {
         if (audioMap[word] instanceof Blob) {
@@ -16504,6 +16504,7 @@ async function playJapaneseAudio(word) {
         // audio = new Audio(`https://assiets.vdegenne.com/data/japanese/audio/${encodeURIComponent(word)}`)
     }
     return new Promise((resolve, reject) => {
+        audio.volume = volume;
         audio.onerror = () => reject();
         audio.onended = () => {
             resolve(audio);
@@ -16588,12 +16589,12 @@ function highlightElement(el) {
 function unhighlightElement(el) {
     el.removeAttribute('hl');
 }
-async function playJapanese(word) {
+async function playJapanese(word, volume = 1) {
     try {
-        await playJapaneseAudio(word);
+        await playJapaneseAudio(word, volume);
     }
     catch (e) {
-        await speakJapanese(word);
+        await speakJapanese(word, volume);
     }
 }
 function randomNumber(min, max) {

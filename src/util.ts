@@ -61,7 +61,7 @@ export function DesignTemplate (struct: DesignStructure|null) {
 
 const audioMap: {[word: string]: HTMLAudioElement|Blob} = {}
 
-export async function playJapaneseAudio (word) {
+export async function playJapaneseAudio (word, volume = 1) {
   let audio: HTMLAudioElement
   if (word in audioMap) {
     if (audioMap[word] instanceof Blob) {
@@ -80,6 +80,7 @@ export async function playJapaneseAudio (word) {
   }
 
   return new Promise((resolve, reject) => {
+    audio.volume = volume;
     audio.onerror = () => reject()
     audio.onended = () => {
       resolve(audio)
@@ -178,11 +179,11 @@ export function unhighlightElement(el: HTMLElement) {
 }
 
 
-export async function playJapanese (word: string) {
+export async function playJapanese (word: string, volume = 1) {
   try {
-    await playJapaneseAudio(word)
+    await playJapaneseAudio(word, volume)
   } catch (e) {
-    await speakJapanese(word)
+    await speakJapanese(word, volume)
   }
 }
 
