@@ -36,3 +36,5 @@ export function generateOutlineStyle (color = '#000', r = 3) {
 export function googleImageSearch (word) {
   window.open(`http://www.google.com/search?q=${encodeURIComponent(word)}&tbm=isch`, '_blank')
 }
+
+export const instaHashTags = `#learnjapanese #japanesestudy #studyjapan #japanesestudying #studyjapanese #learningjapanese #learnjapaneseonline #japaneseonline #practicejapanese #japaneselearning #japaneselesson #japaneselessons #japaneseclass #japaneselanguageteacher #jlpt #jlptn1 #jlptn2 #jlptn3 #jlptn4 #jlptn5 #jlpt1 #jlpt2 #jlpt3 #jlpt4 #jlpt5 #japanesetest`
