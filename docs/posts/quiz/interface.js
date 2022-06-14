@@ -25,9 +25,11 @@ export class PostElement extends LitElement {
   }
     header {
       width: 100%;
-      font-size:3em;font-weight: 500;
+      font-size: 95px;
+      font-weight: 500;
       display: flex;
       align-items: center;
+      margin: 5px 0;
       /* margin: 18px 0; */
     }
     header > img {
@@ -35,13 +37,13 @@ export class PostElement extends LitElement {
       margin: 0 24px 0 12px;
     }
     #center {
-      height:1px;flex:1;display:flex;justify-content:center;align-items:center;background-color:black;border-radius:22px;
-      overflow: hidden;
+      height:1px;flex:1;display:flex;justify-content:center;align-items:center;border-radius:22px;
       margin: 0 18px;
       width: 100%;
     }
     #center > img {
-      width:100%;
+      /* width:100%; */
+      height: 100%;
     }
     #choices {
       display: flex;
@@ -50,6 +52,7 @@ export class PostElement extends LitElement {
       box-sizing: border-box;
       /* flex: 1; */
       margin: 18px 0;
+      margin-top: 0;
     }
     .choice {
       display: flex;
@@ -111,14 +114,18 @@ export class PostElement extends LitElement {
     <canvas-element>
       <page-element active flex column>
         <header>
-          <img src="/images/jp_flag2.png">
+          <img src="../images/jp_flag2.png">
           <span style="color:#b71c1c;margin-right:12px;">Kanji</span><span>Quiz</span>
         </header>
+        ${question ? html`
+        <div>What's the Kanji for "<b>${question}</b>" ?</div>
+        ` : html`
         <div style="margin-bottom:12px;">How well do you know Japanese?</div>
+        `}
         <div id=center>
           ${this.params.img ? html`
             <img src="${this.params.img}" style="border-radius:22px">
-            <div class="outlined" style="position:absolute;font-size:2.5em;color:white;font-weight:300">${question || ''}?</div>
+            <!-- <div class="outlined" style="position:absolute;font-size:2.5em;color:white;font-weight:300">${question || ''}</div> -->
           ` : ''}
         </div>
         <div id=choices>
