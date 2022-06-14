@@ -7,8 +7,12 @@ const alphabet = 'abcdefghijklmnopqrstuvwxyz'
 export class PostElement extends LitElement {
   static properties = {
     params: { type: Object },
-    fontSize: { type: Number }
+    fontSize: { type: Number },
+    imageIndex: { type: Number }
   }
+
+  images = [];
+  // imageIndex = 0;
 
   get canvasElement () { return this.shadowRoot.querySelector('canvas-element')}
 
@@ -17,9 +21,14 @@ export class PostElement extends LitElement {
     super()
     this.loadParams()
     this.fontSize = 19
+    this.imageIndex = 0;
+    this.getImages()
   }
 
   static styles = [globalStyles, css`
+  [hide] {
+    display: none;
+  }
   canvas-element {
     background-color: #fff;
   }
@@ -99,7 +108,7 @@ export class PostElement extends LitElement {
     }
   `]
 
-  render() {
+  get meta () {
     const choices = this.params.choices.split('/')
     let answer, question
     let answerIndex = choices.findIndex(c=>c.startsWith('$'))
@@ -112,6 +121,12 @@ export class PostElement extends LitElement {
       question = choices.splice(questionIndex, 1)[0].slice(1)
       // choices[questionIndex] = question
     }
+    return { choices, answer, question }
+  }
+
+  render() {
+
+    const { choices, answer, question } = this.meta
 
     return html`
     <canvas-element>
@@ -126,10 +141,9 @@ export class PostElement extends LitElement {
         <div style="margin-bottom:12px;">How well do you know Japanese?</div>
         `}
         <div id=center>
-          ${this.params.img ? html`
-            <img src="${this.params.img}" style="border-radius:22px">
-            <!-- <div class="outlined" style="position:absolute;font-size:2.5em;color:white;font-weight:300">${question || ''}</div> -->
-          ` : ''}
+          ${this.images ? this.images.map((img, i) => {
+            return html`<img src="${img.data}" ?hide=${i !== this.imageIndex}>`
+          }) : nothing}
         </div>
         <div id=choices>
         ${choices.map((c, i) => html`
@@ -140,7 +154,7 @@ export class PostElement extends LitElement {
         `)}
         </div>
 
-        <div style="position:absolute;bottom:0;right:0;color:#b71c1c;opacity:0.5;font-size:0.8em">@chikojap</div>
+        <div style="position:absolute;bottom:0;right:0;color:#b71c1c;opacity:0.5;font-size:0.6em">@chikojap</div>
       </page-element>
     </canvas-element>
 
@@ -151,6 +165,10 @@ export class PostElement extends LitElement {
         @click=${()=>{if (answer) { googleImageSearch(answer) }}}></mwc-icon-button>
       <mwc-icon-button icon=content_copy
         @click=${()=>{copyToClipboard(instaHashTags)}}></mwc-icon-button>
+      <mwc-icon-button icon=arrow_backward
+        @click=${()=>{this.imageIndex--}}></mwc-icon-button>
+      <mwc-icon-button icon=arrow_forward
+        @click=${()=>{this.imageIndex++}}></mwc-icon-button>
       <mwc-slider
         discrete
         withTickMarks
@@ -166,17 +184,67 @@ export class PostElement extends LitElement {
     `
   }
 
-  changeParams () {
+  async changeParams () {
     const choices = prompt('choices', this.params.choices)
-    if (choices) {
+    if (choices && choices != this.params.choices) {
       this.params.choices = choices
+      this.getImages()
     }
-    const img = prompt('img')
-    if (img) {
-      this.params.img = img
-    }
+    // const img = prompt('img')
+    // if (img && img != this.params.img) {
+    //   this.params.img = img;
+    //   this.loadImage()
+    // }
     this.requestUpdate()
     this.saveParams()
+  }
+
+  async getImages () {
+    const { answer } = this.meta
+    if (answer) {
+      const response = await fetch(`https://assiets.vdegenne.com/google/images/${answer}イラスト?lang=jp`)
+      this.images = await response.json()
+      this.imageIndex = 0;
+      this.requestUpdate()
+    }
+  }
+
+  async loadImage () {
+    if (this.params.img) {
+      const image = new Image()
+      // image.setAttribute('crossorigin', 'anonymous')
+      image.onload = () => {
+        const canvas = document.createElement('canvas')
+        canvas.width = image.naturalWidth
+        canvas.height = image.naturalHeight
+        canvas.getContext('2d').drawImage(image, 0, 0);
+        this.canvas = canvas
+        this.requestUpdate()
+      }
+      image.src = this.params.img
+    }
+    // const response = await fetch(this.params.img, {
+    //   mode: 'no-cors'
+    // })
+    // const blob = await response.blob()
+    // let result
+    // try {
+    //   result = await new Promise((resolve, reject) => {
+    //     const reader = new FileReader()
+    //     reader.addEventListener('loadend', (event) => {
+    //       resolve(reader.result)
+    //     })
+    //     reader.onerror = (e) => {
+    //       console.log(e)
+    //       reject()
+    //     }
+    //     reader.readAsDataURL(blob)
+    //   })
+    // } catch (e) {
+    //   console.log(e)
+    // }
+    // console.log(result)
+    // // this.params.img = img
   }
 
   saveParams () {
@@ -189,7 +257,7 @@ export class PostElement extends LitElement {
       this.params = JSON.parse(params)
     }
     else {
-      this.params = { choices: '', img: '' }
+      this.params = { choices: ''  }
     }
   }
 }
