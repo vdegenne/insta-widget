@@ -1,5 +1,6 @@
 import {LitElement, html, css, PropertyValues} from 'lit'
 import { customElement, query, state } from 'lit/decorators.js'
+import { styleMap} from 'lit/directives/style-map.js'
 import {unsafeHTML} from 'lit/directives/unsafe-html.js'
 import '@material/mwc-snackbar'
 import '@material/mwc-button'
@@ -13,7 +14,7 @@ import html2canvas from 'html2canvas'
 import {Slider} from "@material/mwc-slider";
 import 'vanilla-colorful'
 import { DesignStructure } from './types'
-import { convertTextToDesignStructure, DesignTemplate, play, playJapanese, playJapaneseAudio, sleep } from './util'
+import { convertTextToDesignStructure, DesignTemplate, play, playJapanese, playJapaneseAudio, saveFrame, sleep } from './util'
 import { designStyles } from './styles/designStyles'
 import './widget-span'
 import './difference-widget'
@@ -36,7 +37,7 @@ import 'vanilla-colorful'
 // @ts-ignore
 window.html = html
 export {html, LitElement, globalStyles, css}
-export {sleep, play, playJapaneseAudio, speakJapanese, playJapanese, copyToClipboard}
+export {sleep, play, playJapaneseAudio, speakJapanese, playJapanese, copyToClipboard, saveFrame, html2canvas, styleMap}
 
 declare global {
   interface Window {
@@ -186,7 +187,7 @@ export class AppContainer extends LitElement {
             <div class="control-box" ?selected="${this.view == 'save'}" style="justify-content: center;align-items: center">
               <div>
                 <mwc-button raised
-                    @click=${()=>{this.save()}}>save</mwc-button>
+                    @click=${()=>{saveFrame(this.canvasElement)}}>save</mwc-button>
                 <mwc-button raised
                     @click=${()=>{this.operate()}}>operate</mwc-button>
               </div>
@@ -262,24 +263,6 @@ export class AppContainer extends LitElement {
     } catch (e) {}
   }
 
-  async save() {
-    // we floor the dimensions to avoid html2canvas glitch on the sides
-    const canvasStyles = window.getComputedStyle(this.canvasElement)
-    this.canvasElement.style.height = `${~~parseInt(canvasStyles.width)}px`
-    this.canvasElement.style.width = `${~~parseInt(canvasStyles.width)}px`
-
-    // snapshot
-    const canvas = await html2canvas(this.canvasElement);
-    // const dataURL = canvas.toDataURL()
-    const img = document.createElement('a')
-    img.href = canvas.toDataURL()
-    img.download = `instagram-img-${Date.now()}`
-    img.click()
-    // console.log(canvas.toDataURL())
-
-    // finally we remove the width property off the canvas element to avoid inconsistent resizing
-    this.canvasElement.style.width = ''
-  }
 
   saveOptions () {
     localStorage.setItem('japanese-difference:options', JSON.stringify({

@@ -3,6 +3,7 @@ import { DesignLine, DesignStructure } from './types';
 import {unsafeHTML} from 'lit/directives/unsafe-html.js'
 import { hasJapanese } from 'asian-regexps';
 import { speakJapanese } from './speech';
+import html2canvas from 'html2canvas';
 
 export function convertTextToDesignStructure (text: string): DesignStructure|null {
   let structure: any
@@ -190,4 +191,25 @@ export async function playJapanese (word: string, volume = 1) {
 
 export function randomNumber (min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min
+}
+
+
+
+export async function saveFrame (frame: HTMLElement) {
+  // we floor the dimensions to avoid html2canvas glitch on the sides
+  const canvasStyles = window.getComputedStyle(frame)
+  frame.style.height = `${~~parseInt(canvasStyles.width)}px`
+  frame.style.width = `${~~parseInt(canvasStyles.width)}px`
+
+  // snapshot
+  const canvas = await html2canvas(frame);
+  // const dataURL = canvas.toDataURL()
+  const img = document.createElement('a')
+  img.href = canvas.toDataURL()
+  img.download = `instagram-img-${Date.now()}.png`
+  img.click()
+  // console.log(canvas.toDataURL())
+
+  // finally we remove the width property off the canvas element to avoid inconsistent resizing
+  frame.style.width = ''
 }

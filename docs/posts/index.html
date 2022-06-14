@@ -46,14 +46,14 @@
       // module?
       const params = new URLSearchParams(window.location.search);
       const module = params.has('mod') ? params.get('mod') : 'main'
-      import {LitElement, globalStyles} from '../app.js';
+      import {LitElement, globalStyles, css} from '../app.js';
       import(`../posts/${module}/interface.js`)
 
       class RawElement extends LitElement {
 
         get postElement() { return this.shadowRoot.querySelector('post-element') }
 
-        static styles = [globalStyles]
+        static styles = [globalStyles, css`:host{ display: block }`]
 
         render () {
           return [
@@ -123,8 +123,8 @@
       let player
       function onYouTubeIframeAPIReady() {
           player = new YT.Player('ytplayer', {
-            height: '390',
-            width: '640',
+            height: '195',
+            width: '320',
             videoId: '5qap5aO4i9A',
             playerVars: {
               'playsinline': 1,

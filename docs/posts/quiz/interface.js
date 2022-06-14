@@ -1,4 +1,4 @@
-import { html, LitElement, css, globalStyles, copyToClipboard }from '../../app.js'
+import { html, LitElement, css, globalStyles, copyToClipboard, saveFrame, styleMap } from '../../app.js'
 import {googleImageSearch, instaHashTags} from '../../util.js'
 // import {PostElementBase} from '../../PostElementBase'
 
@@ -6,12 +6,17 @@ const alphabet = 'abcdefghijklmnopqrstuvwxyz'
 
 export class PostElement extends LitElement {
   static properties = {
-    params: { type: Object }
+    params: { type: Object },
+    fontSize: { type: Number }
   }
+
+  get canvasElement () { return this.shadowRoot.querySelector('canvas-element')}
+
 
   constructor () {
     super()
     this.loadParams()
+    this.fontSize = 19
   }
 
   static styles = [globalStyles, css`
@@ -19,17 +24,19 @@ export class PostElement extends LitElement {
     background-color: #fff;
   }
   page-element {
-    padding-top: 0;
+    /* padding-top: 0; */
     border: 12px solid #b71c1c;
     align-items: stretch;
+    font-size: initial;
   }
     header {
       width: 100%;
-      font-size: 95px;
+      /* font-size: 95px; */
       font-weight: 500;
       display: flex;
       align-items: center;
       margin: 5px 0;
+      margin-top: 0;
       /* margin: 18px 0; */
     }
     header > img {
@@ -50,9 +57,6 @@ export class PostElement extends LitElement {
       justify-content: center;
       width: 100%;
       box-sizing: border-box;
-      /* flex: 1; */
-      margin: 18px 0;
-      margin-top: 0;
     }
     .choice {
       display: flex;
@@ -60,12 +64,12 @@ export class PostElement extends LitElement {
       margin: 0 12px;
     }
     .choice > div:first-of-type {
-      --choice-letter-size: 42px;
+      /* --choice-letter-size: 42px; */
       display: flex;
       align-items: center;
       justify-content: center;
-      width: var(--choice-letter-size);
-      height: var(--choice-letter-size);
+      /* width: var(--choice-letter-size);
+      height: var(--choice-letter-size); */
       background-color: #ffc107;
       color: #212121;
       border-radius: 5px;
@@ -74,7 +78,7 @@ export class PostElement extends LitElement {
       /* font-weight: 500; */
     }
     .choice > w-span {
-      font-size: 4.5em;
+      /* font-size: 4.5em; */
       font-weight: 100;
       color: #212121;
       position: relative;
@@ -110,15 +114,14 @@ export class PostElement extends LitElement {
     }
 
     return html`
-    <div style="background-color:#b71c1c;height:12px;"></div>
     <canvas-element>
-      <page-element active flex column>
-        <header>
-          <img src="../images/jp_flag2.png">
-          <span style="color:#b71c1c;margin-right:12px;">Kanji</span><span>Quiz</span>
+      <page-element active flex column style="${styleMap({ fontSize: `${this.fontSize}px` })}">
+        <header style="font-size:2.3em">
+          <img src="../images/jp_flag2.png" width="${this.fontSize * 3}">
+          <span style="color:#b71c1c;margin-right:12px">Kanji</span><span>Quiz</span>
         </header>
         ${question ? html`
-        <div>What's the Kanji for "<b>${question}</b>" ?</div>
+        <div style="font-size:0.8em;margin-bottom:${this.fontSize/2}px">What's the Kanji for "<b>${question}</b>" ?</div>
         ` : html`
         <div style="margin-bottom:12px;">How well do you know Japanese?</div>
         `}
@@ -130,17 +133,17 @@ export class PostElement extends LitElement {
         </div>
         <div id=choices>
         ${choices.map((c, i) => html`
-          <div class=choice>
-            <div>${alphabet[i].toUpperCase()}</div>
-            <w-span t=${c}></w-span>
+          <div class=choice style="">
+            <div style="font-size:0.7em;width:${this.fontSize}px;height:${this.fontSize}px">${alphabet[i].toUpperCase()}</div>
+            <w-span t=${c} fs=3em></w-span>
           </div>
         `)}
         </div>
 
-        <div style="position:absolute;bottom:0;right:0;color:#b71c1c;opacity:0.5;font-size:0.9em">@chikojap</div>
+        <div style="position:absolute;bottom:0;right:0;color:#b71c1c;opacity:0.5;font-size:0.8em">@chikojap</div>
       </page-element>
     </canvas-element>
-    <div style="background-color:#b71c1c;height:12px;"></div>
+
     <div id="controls">
       <mwc-icon-button icon=settings
         @click=${()=>{this.changeParams()}}></mwc-icon-button>
@@ -148,6 +151,17 @@ export class PostElement extends LitElement {
         @click=${()=>{if (answer) { googleImageSearch(answer) }}}></mwc-icon-button>
       <mwc-icon-button icon=content_copy
         @click=${()=>{copyToClipboard(instaHashTags)}}></mwc-icon-button>
+      <mwc-slider
+        discrete
+        withTickMarks
+        min="1"
+        max="100"
+        step="1"
+        value="19"
+        @input=${e=>{this.fontSize=e.detail.value}}
+      ></mwc-slider>
+      <mwc-icon-button icon=save
+        @click=${()=>{saveFrame(this.canvasElement)}}></mwc-icon-button>
     </div>
     `
   }
