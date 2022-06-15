@@ -32,7 +32,7 @@
     "watch": "rollup -cw",
     "watch:server": "pm2 start pm2.config.js",
     "browser-sync:static": "browser-sync docs --files docs/app.js --files docs/raw/index.html --files docs/posts/* --no-notify --no-open",
-    "browser-sync": "browser-sync start --proxy http://localhost:33555/ --files docs/raw/index.html --files docs/posts/* --files docs/app.js --no-notify"
+    "browser-sync": "browser-sync start --proxy http://localhost:33555/ --files docs/posts/* docs/app.js --no-notify --no-open"
   },
   "dependencies": {
     "@vdegenne/clipboard-copy": "^3.1.0",
