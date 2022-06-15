@@ -1,4 +1,4 @@
-import {LitElement, globalStyles, css } from '../../app.js'
+import {LitElement, globalStyles, css, speakJapanese } from '../../app.js'
 
 console.clear()
 
@@ -11,6 +11,8 @@ export class PostElement extends LitElement {
     selectedPart: { type: HTMLElement }
   }
 
+  partIndex = -1
+
   constructor () {
     super()
     this.searching = false
@@ -18,15 +20,27 @@ export class PostElement extends LitElement {
     this.fontSize = localStorage.getItem('insta-widget:tatoeba-fontsize') ? JSON.parse(localStorage.getItem('insta-widget:tatoeba-fontsize')) : 34;
     this.selectedPart = null
     this.loadLocalStorage()
+
+    this.addEventListener('click', e=>{
+      const target =e.composedPath()[0];
+      if (target.nodeName == 'SPAN' && target.classList.contains('text')) {
+        return
+      }
+      this.selectableParts.forEach(el=>el.removeAttribute('selected'))
+    })
   }
 
   get dialog () { return this.shadowRoot.querySelector('mwc-dialog') }
   get textfield () { return this.shadowRoot.querySelector('mwc-textfield') }
   get textarea () { return this.shadowRoot.querySelector('mwc-textarea') }
+  get selectableParts () { return this.shadowRoot.querySelectorAll('.part') }
 
   static styles = [globalStyles, css`
     canvas-element {
       background-color: white;
+    }
+    page-element {
+      padding: 24px;
     }
     .item {
       padding:12px 8px;cursor:pointer
@@ -36,10 +50,11 @@ export class PostElement extends LitElement {
     }
     #sentence {
       display: flex;
+      flex-wrap: wrap;
     }
     .part {
       position: relative;
-      padding-bottom: 5px;
+      /* padding-bottom: 5px; */
       cursor: pointer;
       margin: 0 2px;
     }
@@ -48,6 +63,10 @@ export class PostElement extends LitElement {
       position:absolute;left:0;right:0;bottom:0;
       height: 3px;
       margin:0 5px;
+    }
+    .part[selected], .part > span::selection {
+      background-color: yellow;
+      color: black !important;
     }
     mwc-textarea {
       width: 100%;
@@ -60,7 +79,7 @@ export class PostElement extends LitElement {
       height: 42px;
       border-radius: 50%;
       margin: 0 3px;
-      /* cursor: pointer; */
+      cursor: pointer;
     }
   `]
 
@@ -72,7 +91,7 @@ export class PostElement extends LitElement {
         ${this.example.j.split('.').map(part => {
           return html`
           <div class=part jp style="font-size:1.1em;font-weight:500" @click=${(e)=>{this.selectedPart = e.target.parentElement}}>
-            <span>${part}</span>
+            <span class="text" style="user-select:all">${part}</span>
             ${part !== '。' ? html`<div class="underline"></div>` : ''}
           </div>`
         })}
@@ -85,6 +104,8 @@ export class PostElement extends LitElement {
 
     <div flex style="justify-content: flex-start">
       <mwc-icon-button icon=settings @click=${()=>{this.showExamplesDialog()}}></mwc-icon-button>
+      <mwc-icon-button icon=arrow_backward @click=${(e)=>{e.stopPropagation();this.selectPreviousPart()}}></mwc-icon-button>
+      <mwc-icon-button icon=arrow_forward @click=${(e)=>{e.stopPropagation();this.selectNextPart()}}></mwc-icon-button>
       <div id=colors flex
           @click=${(e)=>{this.onColorClick(e)}}>
         <div style="background-color:#f44336"></div>
@@ -108,6 +129,7 @@ export class PostElement extends LitElement {
         style="flex:1"
       ></mwc-slider>
     </div>
+    <div style="padding:12px;font-size:1.5em;background-color:white;">${this.example.j.replace(/\./g, '')}</div>
     <mwc-textarea rows=3
       .value=${this.example.j}
       @keyup=${(e) => {
@@ -116,7 +138,6 @@ export class PostElement extends LitElement {
         this.saveLocalStorage()
       }}
     ></mwc-textarea>
-    <div style="padding:12px;font-size:1.5em">${this.example.j.replace(/\./g, '')}</div>
 
     <mwc-dialog heading="Fetch examples">
       <div flex>
@@ -141,6 +162,26 @@ export class PostElement extends LitElement {
     </mwc-dialog>
     `
   }
+
+  selectPreviousPart () {
+    this.partIndex--;
+    this.selectableParts.forEach(el => el.removeAttribute('selected'));
+    const part = this.selectableParts[this.partIndex];
+    if (part) {
+      part.setAttribute('selected', '')
+      speakJapanese(part.textContent)
+    }
+  }
+  selectNextPart () {
+    this.partIndex++;
+    this.selectableParts.forEach(el => el.removeAttribute('selected'));
+    const part = this.selectableParts[this.partIndex];
+    if (part) {
+      part.setAttribute('selected', '')
+      speakJapanese(part.textContent)
+    }
+  }
+
 
   onColorClick (e) {
     if (this.selectedPart) {

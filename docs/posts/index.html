@@ -26,7 +26,7 @@
 
     <raw-element id="rawElement"></raw-element>
 
-    <div id="ytplayer"></div>
+    <!-- <div id="ytplayer"></div>
     <mwc-slider
       discrete
       withTickMarks
@@ -35,7 +35,10 @@
       step="1"
       value=50
       oninput="changeYoutubePlayerVolume(event)"
-    ></mwc-slider>
+    ></mwc-slider> -->
+
+    <mwc-button outlined icon=radio onclick="lofiPlayer.show()"$>lofi player</mwc-button>
+    <lofi-player id="lofiPlayer"></lofi-player>
 
     <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/" title="YouTube video player"
       frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

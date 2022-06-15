@@ -1349,7 +1349,21 @@ w-sep:last-of-type {
     font-size: 17px;
     font-weight: bold;
   }
-  `,__decorate([e$6({type:Number})],JlptTag.prototype,"n",void 0),__decorate([e$6({type:Boolean})],JlptTag.prototype,"horizontal",void 0),JlptTag=__decorate([n$2("jlpt-tag")],JlptTag);let CanvasElement=class extends s$1{render(){return $`<slot></slot>`}async operate(){const A=this.shadowRoot.querySelector("slot").assignedElements();for(const e of A)"operate"in e&&await e.operate()}firstUpdated(){window.addEventListener("resize",(()=>{this.updateSize()}))}updated(){this.updateSize()}updateSize(){const A=getComputedStyle(this);this.style.height=A.width}};CanvasElement.styles=r$4`
+  `,__decorate([e$6({type:Number})],JlptTag.prototype,"n",void 0),__decorate([e$6({type:Boolean})],JlptTag.prototype,"horizontal",void 0),JlptTag=__decorate([n$2("jlpt-tag")],JlptTag);let LofiPlayer=class extends s$1{constructor(){super(),window.onYouTubeIframeAPIReady=this.onYouTubeIframeAPIReady.bind(this)}render(){return $`
+    <mwc-dialog heading="Lofi Player">
+
+      <div id="playerContainer"></div>
+      <mwc-slider
+        min="0"
+        max="100"
+        step="1"
+        value="50"
+        @input=${A=>{this.player.setVolume(A.detail.value)}}
+      ></mwc-slider>
+
+      <mwc-button outlined slot=secondaryAction dialogAction=close>close</mwc-button>
+    </mwc-dialog>
+    `}firstUpdated(A){this.dialog.addEventListener("opened",(async()=>{this.loadYoutubePlayerScript(),await this.playerReady(),this.shadowRoot.querySelector("mwc-slider").layout()}))}loadYoutubePlayerScript(){this.script||(this.script=document.createElement("script"),this.script.src="https://www.youtube.com/iframe_api",this.shadowRoot.append(this.script))}onYouTubeIframeAPIReady(){this.player=new window.YT.Player(this.playerContainer,{height:"195",width:"320",videoId:"5qap5aO4i9A",playerVars:{playsinline:1},events:{onReady:A=>{A.target.setVolume(50)}}})}playerReady(){return new Promise((async A=>{for(;!this.player;)await new Promise((A=>setTimeout(A,100)));A(this.player)}))}show(){this.dialog.show()}};__decorate([i$6("mwc-dialog")],LofiPlayer.prototype,"dialog",void 0),__decorate([i$6("#playerContainer")],LofiPlayer.prototype,"playerContainer",void 0),LofiPlayer=__decorate([n$2("lofi-player")],LofiPlayer);let CanvasElement=class extends s$1{render(){return $`<slot></slot>`}async operate(){const A=this.shadowRoot.querySelector("slot").assignedElements();for(const e of A)"operate"in e&&await e.operate()}firstUpdated(){window.addEventListener("resize",(()=>{this.updateSize()}))}updated(){this.updateSize()}updateSize(){const A=getComputedStyle(this);this.style.height=A.width}};CanvasElement.styles=r$4`
   :host {
     display: flex;
     justify-content: center;

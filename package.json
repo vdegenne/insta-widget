@@ -17,6 +17,7 @@
     "@rollup/plugin-typescript": "^8.3.0",
     "@types/fabric": "^4.5.8",
     "@types/path-browserify": "^1.0.0",
+    "@types/youtube": "^0.0.46",
     "asian-regexps": "^4.3.0",
     "browser-sync": "^2.27.7",
     "html2canvas": "^1.4.1",
