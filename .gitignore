@@ -9,3 +9,8 @@ docs/node_modules/fabric/**
 docs/node_modules/kuroshiro/**
 !docs/node_modules/kuroshiro/src
 !docs/node_modules/kuroshiro/src/**
+!docs/node_modules/japanese-data-module
+docs/node_modules/japanese-data-module/**
+!docs/node_modules/japanese-data-module/dist
+# docs/node_modules/japanese-data-module/dist/**
+!docs/node_modules/japanese-data-module/dist/data.js

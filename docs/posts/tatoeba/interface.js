@@ -1,5 +1,8 @@
+import { copyToClipboard } from '../../app.js'
 import {LitElement, globalStyles, css, speakJapanese } from '../../app.js'
-
+import {getExactSearch} from '../../node_modules/japanese-data-module/dist/data.js'
+import {toRawRomaji} from '../../node_modules/kuroshiro/src/util.js'
+import { instaHashTags } from '../../util.js'
 console.clear()
 
 export class PostElement extends LitElement {
@@ -104,20 +107,9 @@ export class PostElement extends LitElement {
 
     <div flex style="justify-content: flex-start">
       <mwc-icon-button icon=settings @click=${()=>{this.showExamplesDialog()}}></mwc-icon-button>
+      <mwc-icon-button icon=content_copy @click=${()=>{this.copyWordsList()}}></mwc-icon-button>
       <mwc-icon-button icon=arrow_backward @click=${(e)=>{e.stopPropagation();this.selectPreviousPart()}}></mwc-icon-button>
       <mwc-icon-button icon=arrow_forward @click=${(e)=>{e.stopPropagation();this.selectNextPart()}}></mwc-icon-button>
-      <div id=colors flex
-          @click=${(e)=>{this.onColorClick(e)}}>
-        <div style="background-color:#f44336"></div>
-        <div style="background-color:#4caf50"></div>
-        <div style="background-color:#3f51b5"></div>
-        <div style="background-color:#ffc107"></div>
-        <div style="background-color:#795548"></div>
-        <div style="background-color:#9e9e9e"></div>
-        <div style="background-color:#212121"></div>
-        <div style="background-color:#009688"></div>
-        <div style="background-color:#9c27b0"></div>
-      </div>
       <mwc-slider
         min=7
         max=100
@@ -128,6 +120,18 @@ export class PostElement extends LitElement {
         }}
         style="flex:1"
       ></mwc-slider>
+    </div>
+    <div id=colors flex style="justify-content:flex-start"
+        @click=${(e)=>{this.onColorClick(e)}}>
+      <div style="background-color:#f44336"></div>
+      <div style="background-color:#4caf50"></div>
+      <div style="background-color:#3f51b5"></div>
+      <div style="background-color:#ffc107"></div>
+      <div style="background-color:#795548"></div>
+      <div style="background-color:#9e9e9e"></div>
+      <div style="background-color:#212121"></div>
+      <div style="background-color:#009688"></div>
+      <div style="background-color:#9c27b0"></div>
     </div>
     <div style="padding:12px;font-size:1.5em;background-color:white;">${this.example.j.replace(/\./g, '')}</div>
     <mwc-textarea rows=3
@@ -161,6 +165,47 @@ export class PostElement extends LitElement {
       <!-- <mwc-button unelevated slot="primaryAction" @click=${()=>{this.onSubmitClick()}}>submit</mwc-button> -->
     </mwc-dialog>
     `
+  }
+
+  copyWordsList () {
+    let list = 'Click here for information\n'
+    if (this.example) {
+      for (const word of this.example.j.split('.')) {
+        if (['。', '、'].includes(word)) { continue }
+        list += '\n'
+        list += word
+        const item = {
+          word
+        }
+        // list.push(item)
+        const search = getExactSearch(word, false)
+        if (search && search[4]) {
+          list += ` (${search[4]} [${toRawRomaji(search[4])}])`
+          // item.hiragana = search[4]
+          // item.roman = toRawRomaji(item.hiragana)
+        }
+        else if (word == 'は') {
+          list += ' [wa]'
+        }
+        else {
+          list += ` [${toRawRomaji(word)}]`
+        }
+
+        if (word == 'は') { list += ' : Topic particle' }
+        else if (word == 'に') { list += ' : "in" particle' }
+        else if (word == 'が') { list += ' : Subject particle' }
+        else if (search && search[3]) {
+          list += ` : ${search[3]}`
+        }
+        else {
+          list += ' : '
+        }
+      }
+    }
+    copyToClipboard(`${list}
+
+${instaHashTags}
+`)
   }
 
   selectPreviousPart () {
