@@ -38,6 +38,7 @@
     ></mwc-slider> -->
 
     <mwc-button outlined icon=radio onclick="lofiPlayer.show()"$>lofi player</mwc-button>
+    <copy-hashtags-button></copy-hashtags-button>
     <lofi-player id="lofiPlayer"></lofi-player>
 
     <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/" title="YouTube video player"
@@ -49,8 +50,9 @@
       // module?
       const params = new URLSearchParams(window.location.search);
       const module = params.has('mod') ? params.get('mod') : 'main'
-      import {LitElement, globalStyles, css} from '../app.js';
-      import(`../posts/${module}/interface.js`)
+      import {LitElement, html, globalStyles, css, copyToClipboard} from '../app.js';
+      import(`../posts/${module}/interface.js`);
+      import {instaHashTags} from '../util.js';
 
       class RawElement extends LitElement {
 
@@ -114,32 +116,42 @@
         active.removeAttribute('active')
         return activeIndex + 1
       }
+
+      window.customElements.define('copy-hashtags-button', class extends LitElement {
+        static styles = css`:host { display: inline-block }`
+        render() {
+          return html`<mwc-button unelevated icon=content_copy @click="${() => {
+            copyToClipboard(instaHashTags)
+          }}">hashtags</mwc-button>`
+        }
+      })
+
     </script>
 
 
     <script>
-      const tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      // const tag = document.createElement('script');
+      // tag.src = "https://www.youtube.com/iframe_api";
+      // const firstScriptTag = document.getElementsByTagName('script')[0];
+      // firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-      let player
-      function onYouTubeIframeAPIReady() {
-          player = new YT.Player('ytplayer', {
-            height: '195',
-            width: '320',
-            videoId: '5qap5aO4i9A',
-            playerVars: {
-              'playsinline': 1,
-            },
-            events: {
-              'onReady': function (e) {
-                e.target.setVolume(50)
-              },
-              // 'onStateChange': onPlayerStateChange
-            }
-          });
-        }
+      // let player
+      // function onYouTubeIframeAPIReady() {
+      //     player = new YT.Player('ytplayer', {
+      //       height: '195',
+      //       width: '320',
+      //       videoId: '5qap5aO4i9A',
+      //       playerVars: {
+      //         'playsinline': 1,
+      //       },
+      //       events: {
+      //         'onReady': function (e) {
+      //           e.target.setVolume(50)
+      //         },
+      //         // 'onStateChange': onPlayerStateChange
+      //       }
+      //     });
+      //   }
 
         function onPlayerReady(event) {
           // event.target.playVideo();
