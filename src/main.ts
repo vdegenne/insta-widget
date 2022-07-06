@@ -38,7 +38,7 @@ import 'vanilla-colorful'
 // @ts-ignore
 window.html = html
 export {html, LitElement, globalStyles, css}
-export {sleep, play, playJapaneseAudio, speakJapanese, playJapanese, copyToClipboard, saveFrame, html2canvas, styleMap}
+export {sleep, play, playJapaneseAudio, speakJapanese, playJapanese, copyToClipboard, saveFrame, html2canvas, styleMap, unsafeHTML}
 
 declare global {
   interface Window {
