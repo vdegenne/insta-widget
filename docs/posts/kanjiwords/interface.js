@@ -58,7 +58,7 @@ export class KanjiWords extends LitElement {
         `
       })()}</h1>
       <div id="words" flex column fullwidth style="justify-content:space-evenly">
-      ${data.words.slice(0,4).map(w => {
+      ${data.words.slice(0,5).map(w => {
         const word = getExactSearch(w)
         if (!word) { return '' }
         const meaning = word[3]?.split('//')[0];
@@ -73,6 +73,7 @@ export class KanjiWords extends LitElement {
         `
       })}
       </div>
+      <div style="position:absolute;bottom:0;right:0;">@chikojap</div>
     </canvas-element>
     <div>
       <mwc-icon-button icon=settings @click=${()=>{this.dialog.show()}}></mwc-icon-button>
