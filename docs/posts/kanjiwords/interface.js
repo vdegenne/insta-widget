@@ -39,13 +39,14 @@ export class KanjiWords extends LitElement {
   }
   #meanings > div {
     background-color: #b71c1c;
+    background-color: #9c27b0;
     color:ghostwhite;
     margin: 5px;
     padding: 2px 12px;
     border-radius: 5px;
   }
   [highlight] {
-    color: #b71c1c !important;
+    color: #9c27b0 !important;
   }
   `]
 
@@ -55,10 +56,11 @@ export class KanjiWords extends LitElement {
       ${(() => {
         if (data.kanji.length == 0) { return '' }
         const kanji = Kanjis.find(k=>k[1]==data.kanji)
-        const meanings = kanji[3].split('//')[0].split(/[;,]/g).map(e=>e.trim())
+        const meanings = kanji[4].split('//')[0].split(/[;,]/g).map(e=>e.trim())
         return html`
         <header flex fullwidth between style="font-size:2.3em">
-          <w-span t=${kanji[1]} fs="5em" style="margin:0 32px 0;line-height:231px;" c=#b71c1c></w-span>
+          <w-span t=${kanji[1]} fs="5em" style="margin:0 32px 0;line-height:231px;" highlight></w-span>
+          <!-- <img src="" width=250px style="margin:0 32px 0;line-height:231px;"> -->
           <div id=meanings style="flex-wrap:wrap" flex>
           ${meanings.slice(0,5).map(m=> {
             if (m.length > 10) return ''
@@ -76,9 +78,9 @@ export class KanjiWords extends LitElement {
         return html`
         <div class=word flex fullwidth style="justify-content:stretch">
           <div flex style="white-space:nowrap">
-              <span style="font-size:3.5em;font-weight:600;color:black;position:relative;top:-6px" jp>${unsafeHTML(word[1].replaceAll(new RegExp(data.kanji, 'g'), match => `<span highlight>${match}</span>`))}</span>
+              <span style="font-size:3.5em;font-weight:600;color:black;position:relative;top:-6px;" jp>${unsafeHTML(word[1].replaceAll(new RegExp(data.kanji, 'g'), match => `<span highlight>${match}</span>`))}</span>
             <!-- <w-span t=${word[1]} fs="3.5em" style=";border-radius:3px;padding:0 5px;position:relative;top:-6px;" c=black fw=600></w-span> -->
-            <w-span t="[ ${toRawRomaji(word[4])} ]" fs="1.5em" style="margin:0 12px;padding:4px;background:#ffc107" c=white></w-span>
+            <w-span t="${toRawRomaji(word[4])}" fs="1.5em" style="margin:0 12px;padding:1px;background:#ffeb3b" c=black></w-span>
           </div>
           <w-span t=${meaning} fs="2em" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></w-span>
         </div>
