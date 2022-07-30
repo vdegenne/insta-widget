@@ -44,6 +44,7 @@ export class PostElement extends LitElement {
     }
     page-element {
       padding: 24px;
+      flex-direction: column-reverse !important;
     }
     .item {
       padding:12px 8px;cursor:pointer
@@ -75,7 +76,7 @@ export class PostElement extends LitElement {
       width: 100%;
     }
     w-sep {
-      margin-bottom: 15px !important;
+      margin-bottom: 32px !important;
     }
     #colors > div {
       width:42px;
@@ -95,7 +96,7 @@ export class PostElement extends LitElement {
           return html`
           <div class=part jp style="font-size:1.1em;font-weight:500" @click=${(e)=>{this.selectedPart = e.target.parentElement}}>
             <span class="text" style="user-select:all">${part}</span>
-            ${part !== '。' ? html`<div class="underline"></div>` : ''}
+            <!-- ${part !== '。' ? html`<div class="underline"></div>` : ''} -->
           </div>`
         })}
         </div>
